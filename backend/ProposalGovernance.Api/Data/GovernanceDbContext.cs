@@ -274,8 +274,8 @@ namespace ProposalGovernance.Api.Data
                     Category = "DeepTech",
                     TeamDetails = "Dr. Alice Cooper (AI Lead, PhD in CompSci), Sarah Jenkins (Infrastructure Engineer)",
                     DemoVideoUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                    CreatedAt = DateTime.UtcNow.AddDays(-10),
-                    UpdatedAt = DateTime.UtcNow.AddDays(-10)
+                    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 },
                 new Proposal
                 {
@@ -295,8 +295,8 @@ namespace ProposalGovernance.Api.Data
                     Category = "B2B",
                     TeamDetails = "Bob Martin (Marketing Director, 10+ yrs experience)",
                     DemoVideoUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                    CreatedAt = DateTime.UtcNow.AddDays(-5),
-                    UpdatedAt = DateTime.UtcNow.AddDays(-5)
+                    CreatedAt = new DateTime(2025, 1, 5, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 1, 5, 0, 0, 0, DateTimeKind.Utc)
                 }
             );
 
