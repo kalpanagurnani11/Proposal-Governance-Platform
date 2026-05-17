@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:governancedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8081
+
+# Custom Application Properties
+app:
+  jwt:
+    secret: SuperSecretGovernancePlatformKey2026!$PleaseChangeInProduction
+    issuer: ProposalGovernanceApi
+    audience: ProposalGovernanceClient
+    expiration-ms: 86400000 # 24 hours
+  razorpay:
+    key-id: rzp_test_placeholder_key
+    key-secret: rzp_test_placeholder_secret
+  capital-pool:
+    total-pool-amount: 10000000.00
+  gemini:
+    api-key: ""
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: WARN
+    org.hibernate.SQL: DEBUG

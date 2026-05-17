@@ -72,7 +72,7 @@ namespace ProposalGovernance.Api.Controllers
                 return NotFound(new { message = "Subscription plan not found or not applicable to your role." });
             }
 
-            // Process payment through mock service
+            // Process payment through sandbox service
             string paymentType = request.Role == UserRoles.Founder ? "FounderPremium" : "InvestorPremium";
             if (plan.Price == 0)
             {
