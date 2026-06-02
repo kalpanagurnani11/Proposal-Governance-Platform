@@ -215,7 +215,7 @@ Max 600 words. Start directly with your analysis — no preamble.";
 
         private static string GenerateFallbackResponse(string prompt)
         {
-            return "**⚠️ Gemini API Key Required**\n\nI am currently running in offline mock mode because the Gemini API Key is missing.\n\nTo enable the real AI assistant, please open `backend/ProposalGovernance.Api/appsettings.json` and add your Google Gemini API key to the `\"Gemini\": { \"ApiKey\": \"YOUR_KEY_HERE\" }` section. You can get a free key from Google AI Studio (aistudio.google.com).";
+            return "**⚠️ Gemini API Key Required**\n\nI am currently running in offline sandbox mode because the Gemini API Key is missing.\n\nTo enable the real AI assistant, please open `backend/ProposalGovernance.Api/appsettings.json` and add your Google Gemini API key to the `\"Gemini\": { \"ApiKey\": \"YOUR_KEY_HERE\" }` section. You can get a free key from Google AI Studio (aistudio.google.com).";
         }
 
         private async Task LogAiInteraction(int userId, string role, string prompt, string response)

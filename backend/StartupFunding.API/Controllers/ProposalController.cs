@@ -33,7 +33,7 @@ public class ProposalController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateProposalDto dto)
     {
-        var result = await _proposalService.CreateProposalAsync(dto, 1); // Mocked founderId = 1
+        var result = await _proposalService.CreateProposalAsync(dto, 1); // Sandboxed founderId = 1
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 }
