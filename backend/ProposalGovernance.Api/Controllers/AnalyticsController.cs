@@ -150,7 +150,7 @@ namespace ProposalGovernance.Api.Controllers
         }
 
         [HttpGet("emails")]
-        public async Task<IActionResult> GetMockEmails()
+        public async Task<IActionResult> GetSandboxEmails()
         {
             var emails = await _emailService.GetSentEmailsAsync();
             return Ok(emails);
