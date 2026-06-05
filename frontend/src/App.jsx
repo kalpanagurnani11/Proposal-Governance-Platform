@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { initSignalR, stopSignalR } from './services/signalr';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import LandingPage from './pages/LandingPage';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import FounderDashboard from './pages/FounderDashboard';
@@ -25,18 +26,11 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
   const [currentTab, setCurrentTab] = useState('dashboard');
   const [discussionId, setDiscussionId] = useState(null);
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'dark';
-  });
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Apply theme to document root
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -75,20 +69,21 @@ export default function App() {
 
   const handleLogout = () => {
     localStorage.clear();
-    localStorage.setItem('theme', theme); // keep theme on logout
     stopSignalR();
     setToken(null);
     setUser(null);
     setIsRegistering(false);
+    setShowLanding(true);
     setCurrentTab('dashboard');
   };
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
-  };
 
   // Auth views
   if (!user) {
+    if (showLanding) {
+      return <LandingPage onGetStarted={() => setShowLanding(false)} />;
+    }
+    
     if (isRegistering) {
       return (
         <Register
@@ -151,7 +146,7 @@ export default function App() {
 
     if (user.role === 'Reviewer') {
       if (currentTab === 'consultations') return <ConsultationHub user={user} userRole="Reviewer" setCurrentTab={setCurrentTab} />;
-      if (currentTab === 'dashboard') return <FounderDashboard user={user} setUser={setUser} currentTab={currentTab} setCurrentTab={setCurrentTab} />;
+      if (currentTab === 'dashboard' || currentTab === 'reviews') return <ReviewerDashboard user={user} currentTab={currentTab} setCurrentTab={setCurrentTab} />;
     }
 
     if (user.role === 'Admin') {
@@ -207,8 +202,6 @@ export default function App() {
           user={user}
           currentTab={currentTab}
           handleLogout={handleLogout}
-          theme={theme}
-          toggleTheme={toggleTheme}
           onMenuClick={() => setSidebarOpen(o => !o)}
         />
         <div style={{ flex: 1 }}>
