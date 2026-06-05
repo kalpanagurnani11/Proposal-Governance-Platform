@@ -1,0 +1,8 @@
+C:\Users\asus\.gemini\antigravity\scratch\proposal-governance-platform\backend\ProposalGovernance.Api\obj\Debug\net10.0\ProposalGovernance.Api.csproj.AssemblyReference.cache
+C:\Users\asus\.gemini\antigravity\scratch\proposal-governance-platform\backend\ProposalGovernance.Api\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\asus\.gemini\antigravity\scratch\proposal-governance-platform\backend\ProposalGovernance.Api\obj\Debug\net10.0\ProposalGovernance.Api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\asus\.gemini\antigravity\scratch\proposal-governance-platform\backend\ProposalGovernance.Api\obj\Debug\net10.0\ProposalGovernance.Api.AssemblyInfoInputs.cache
+C:\Users\asus\.gemini\antigravity\scratch\proposal-governance-platform\backend\ProposalGovernance.Api\obj\Debug\net10.0\ProposalGovernance.Api.AssemblyInfo.cs
+C:\Users\asus\.gemini\antigravity\scratch\proposal-governance-platform\backend\ProposalGovernance.Api\obj\Debug\net10.0\ProposalGovernance.Api.csproj.CoreCompileInputs.cache
+C:\Users\asus\.gemini\antigravity\scratch\proposal-governance-platform\backend\ProposalGovernance.Api\obj\Debug\net10.0\ProposalGovernance.Api.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\asus\.gemini\antigravity\scratch\proposal-governance-platform\backend\ProposalGovernance.Api\obj\Debug\net10.0\ProposalGovernance.Api.MvcApplicationPartsAssemblyInfo.cache
