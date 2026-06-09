@@ -1,4 +1,3 @@
-FATAL_SYNTAX_ERROR_WIP_CRASH{[]};
 package com.proposal.governance.model;
 
 import jakarta.persistence.*;
