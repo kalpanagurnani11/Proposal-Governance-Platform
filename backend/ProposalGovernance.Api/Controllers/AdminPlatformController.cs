@@ -47,7 +47,7 @@ namespace ProposalGovernance.Api.Controllers
             var patentVerified = await _context.StartupPatentInfos
                 .CountAsync(sp => sp.VerificationStatus == "Verified");
 
-            // Mock Revenue
+            // Sandbox Revenue
             var revenue = await _context.Payments
                 .Where(p => p.Status == "Success")
                 .SumAsync(p => p.Amount);
