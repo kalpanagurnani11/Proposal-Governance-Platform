@@ -1,5 +1,54 @@
 [
   {
+    "Id": "f0662c97-5673-4666-afca-814e8f90e9a6",
+    "ToEmail": "gurnanikalpana11@gmail.com",
+    "Subject": "[Platform Update] Proposal Approved: CN",
+    "Body": "Hello founder2,\n\nYour proposal \u0027CN\u0027 has been evaluated and the governing committee has decided to: APPROVED.\n\nApproved Amount: $2,500,000.00\nFunds are now available for administrative allocation.\n\nAccess your dashboard to view further details.\n\nBest regards,\nCapital Governance Platform",
+    "SentAt": "2026-07-30T17:50:04.2936966Z"
+  },
+  {
+    "Id": "0fa33c2d-ba0b-4bb6-82ae-dec72171882c",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: CN",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027CN\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 7/10\n- Strategic Score: 8/10\n- Risk Rating: 8/10\n- ROI Expectation: 8/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-07-30T17:41:16.9377691Z"
+  },
+  {
+    "Id": "58c6b9ed-7ad3-468a-92a4-24d54215ca93",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - CN",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027CN\u0027 (Requested Amount: $2,500,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-07-30T17:40:17.7775577Z"
+  },
+  {
+    "Id": "36dfedbc-5124-419d-9bd5-a246b9e800ce",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] New Proposal Submitted: CN",
+    "Body": "Hello Admin,\n\nA new business proposal titled \u0027CN\u0027 requesting $2,500,000.00 has been submitted by founder2 in the Engineering department.\n\nPlease log into the Capital Governance platform to assign reviewers.\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-07-30T17:23:12.5722311Z"
+  },
+  {
+    "Id": "271fa72d-b862-4682-9ae0-b3b26841366a",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - NextGen AI Platform Infrastructure",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027NextGen AI Platform Infrastructure\u0027 (Requested Amount: $1,200,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-07-30T17:13:50.5191969Z"
+  },
+  {
+    "Id": "a1e6de63-1b9f-4259-b807-af3d3ebdc659",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - NextGen AI Platform Infrastructure",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027NextGen AI Platform Infrastructure\u0027 (Requested Amount: $1,200,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-07-30T17:12:27.2647132Z"
+  },
+  {
+    "Id": "1471c094-de24-434f-bdb7-131a7739c8ee",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - NextGen AI Platform Infrastructure",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027NextGen AI Platform Infrastructure\u0027 (Requested Amount: $1,200,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-07-30T17:08:11.6602981Z"
+  },
+  {
     "Id": "60ae7ad8-73ba-4284-a39f-b360e35795db",
     "ToEmail": "bmartin@governance.com",
     "Subject": "[Platform Update] Proposal Approved: CN",
