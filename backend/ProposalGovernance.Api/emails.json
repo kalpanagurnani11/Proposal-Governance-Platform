@@ -1,0 +1,9 @@
+[
+  {
+    "Id": "e6502965-8078-43fd-abd0-eecd0c1f7b7c",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: NextGen AI Platform Infrastructure",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027NextGen AI Platform Infrastructure\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 7/10\n- Strategic Score: 7/10\n- Risk Rating: 7/10\n- ROI Expectation: 7/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-13T14:33:01.9066831Z"
+  }
+]
