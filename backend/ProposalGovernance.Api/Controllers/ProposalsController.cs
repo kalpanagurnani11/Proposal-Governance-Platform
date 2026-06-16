@@ -234,7 +234,7 @@ namespace ProposalGovernance.Api.Controllers
 
             await _hubContext.Clients.All.SendAsync("DashboardUpdated");
 
-            // Mock Email to Admin
+            // Sandbox Email to Admin
             await _emailService.SendEmailAsync(
                 "admin@governance.com",
                 $"[Platform Alert] New Proposal Submitted: {proposal.Title}",
@@ -286,7 +286,7 @@ namespace ProposalGovernance.Api.Controllers
 
             await _hubContext.Clients.All.SendAsync("DashboardUpdated");
 
-            // Mock Email to Reviewer
+            // Sandbox Email to Reviewer
             await _emailService.SendEmailAsync(
                 reviewer.Email,
                 $"[Platform Alert] Assignment: Review Proposal - {proposal.Title}",
@@ -350,7 +350,7 @@ namespace ProposalGovernance.Api.Controllers
 
             await _hubContext.Clients.All.SendAsync("DashboardUpdated");
 
-            // Mock Email to Submitter
+            // Sandbox Email to Submitter
             var submitter = await _userRepository.GetByIdAsync(proposal.SubmitterId);
             if (submitter != null)
             {
