@@ -192,7 +192,7 @@ public class SubscriptionService {
             org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
             headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
 
-            String auth = razorpayKeyId + "|" + razorpayKeySecret;
+            String auth = razorpayKeyId + ":" + razorpayKeySecret;
             String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             headers.set("Authorization", "Basic " + encodedAuth);
 
@@ -341,5 +341,6 @@ public class SubscriptionService {
                 .build();
     }
 }
+
 
 

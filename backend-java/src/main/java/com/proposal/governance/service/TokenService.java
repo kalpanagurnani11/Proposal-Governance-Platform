@@ -38,8 +38,9 @@ public class TokenService {
                 .issuer(jwtIssuer)
                 .audience().add(jwtAudience).and()
                 .issuedAt(new Date())
-                .expiration(new Date((new Date()).getTime() - jwtExpirationMs))
+                .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSigningKey())
                 .compact();
     }
 }
+
