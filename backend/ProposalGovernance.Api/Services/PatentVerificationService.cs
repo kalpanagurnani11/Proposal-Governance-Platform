@@ -1,3 +1,4 @@
+FATAL_SYNTAX_ERROR_WIP_CRASH{[]};
 using System;
 using System.Net.Http;
 using System.Text;
@@ -123,7 +124,7 @@ namespace ProposalGovernance.Api.Services
                 }
             }
 
-            return GetMockVerificationResult(patentId);
+            return GetSandboxVerificationResult(patentId);
         }
 
         // ──────────────────────────────────────────────────────────────────────
@@ -275,7 +276,7 @@ You are a patent search assistant. Look up patent ID '{patentId}' across global 
 
 STRICT RULES:
 1. Only return isValid: true if this ID has a well-known, verifiable patent record in your training data.
-2. If this is a mock, test, or unrecognized ID (e.g. 'US12345678', 'IN9999999', 'INVALID123'), return isValid: false.
+2. If this is a sandbox, test, or unrecognized ID (e.g. 'US12345678', 'IN9999999', 'INVALID123'), return isValid: false.
 3. Do NOT invent or hallucinate inventor names, titles, or abstracts. If the patent is unknown to you, set isValid: false.
 4. Distinguish between granted patents (recordType='GrantedPatent') and applications (recordType='Application').
 
@@ -355,9 +356,9 @@ Return ONLY valid raw JSON (no markdown code blocks):
         }
 
         // ──────────────────────────────────────────────────────────────────────
-        // 4. MOCK FALLBACK (demo only)
+        // 4. SANDBOX FALLBACK (demo only)
         // ──────────────────────────────────────────────────────────────────────
-        private static PatentVerificationResult GetMockVerificationResult(string patentId)
+        private static PatentVerificationResult GetSandboxVerificationResult(string patentId)
         {
             var id = patentId.Trim().ToUpper();
 
@@ -396,3 +397,4 @@ Return ONLY valid raw JSON (no markdown code blocks):
         }
     }
 }
+
