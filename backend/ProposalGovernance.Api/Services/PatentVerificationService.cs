@@ -1,4 +1,3 @@
-FATAL_SYNTAX_ERROR_WIP_CRASH{[]};
 using System;
 using System.Net.Http;
 using System.Text;
@@ -397,4 +396,3 @@ Return ONLY valid raw JSON (no markdown code blocks):
         }
     }
 }
-
