@@ -34,7 +34,7 @@ builder.Services.AddScoped<IDiscussionRepository, DiscussionRepository>();
 
 // Dependency Injection - Services
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddSingleton<IEmailService, EmailService>(); // Singleton to keep mock logs in memory if needed (writes to file anyway)
+builder.Services.AddSingleton<IEmailService, EmailService>(); // Singleton to keep sandbox logs in memory if needed (writes to file anyway)
 builder.Services.AddHttpClient(); // Generic HttpClient registration
 builder.Services.AddScoped<IAiAnalysisService, AiAnalysisService>();
 builder.Services.AddHttpClient<AiAnalysisService>(); // HttpClient for Gemini API calls
