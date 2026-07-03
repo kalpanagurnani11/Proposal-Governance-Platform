@@ -48,7 +48,7 @@ export default function SubscriptionPlans({ user }) {
       // Free plan goes straight to activation
       handleBuy(planId);
     } else {
-      // Open mock payment details modal
+      // Open sandbox payment details modal
       setCheckoutPlan(plan);
       setCardName('');
       setCardNumber('');
@@ -319,7 +319,7 @@ export default function SubscriptionPlans({ user }) {
             {/* Premium Card Graphic */}
             <div className="card-preview">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', letterSpacing: '0.1em' }}>MOCK CARD</span>
+                <span style={{ fontSize: '0.75rem', letterSpacing: '0.1em' }}>SANDBOX CARD</span>
                 <span style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>VISA</span>
               </div>
               <div style={{ fontSize: '1.25rem', letterSpacing: '0.15em', margin: '1rem 0 0.5rem' }}>
