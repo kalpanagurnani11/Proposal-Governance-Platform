@@ -103,7 +103,7 @@ namespace ProposalGovernance.Api.Controllers
 
             await _hubContext.Clients.All.SendAsync("DashboardUpdated");
 
-            // Mock email to Admin
+            // Sandbox email to Admin
             await _emailService.SendEmailAsync(
                 "admin@governance.com",
                 $"[Platform Alert] Review Submitted: {proposal.Title}",
