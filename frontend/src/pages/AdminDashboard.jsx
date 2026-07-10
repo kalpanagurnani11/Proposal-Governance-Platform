@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { subscribeToDashboardUpdates } from '../services/signalr';
-import EmailMockViewer from '../components/EmailMockViewer';
+import EmailSandboxViewer from '../components/EmailSandboxViewer';
 import AiReportModal from '../components/AiReportModal';
 
 
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {adminTab === 'emails' && <EmailMockViewer />}
+      {adminTab === 'emails' && <EmailSandboxViewer />}
 
       {adminTab === 'proposals' && (
         <div className="dashboard-columns">

@@ -79,7 +79,7 @@ namespace ProposalGovernance.Api.Controllers
             existing.CheckedAt = null;
             existing.Notes = request.Notes;
 
-            // Auto-verify basic elements for mock/demo
+            // Auto-verify basic elements for sandbox/demo
             existing.EmailVerified = true;
             existing.MobileVerified = true;
 
