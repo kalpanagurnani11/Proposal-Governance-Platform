@@ -9,10 +9,10 @@ namespace ProposalGovernance.Api.Services
     public interface IEmailService
     {
         Task SendEmailAsync(string toEmail, string subject, string body);
-        Task<IEnumerable<MockEmail>> GetSentEmailsAsync();
+        Task<IEnumerable<SandboxEmail>> GetSentEmailsAsync();
     }
 
-    public class MockEmail
+    public class SandboxEmail
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string ToEmail { get; set; } = string.Empty;
@@ -36,7 +36,7 @@ namespace ProposalGovernance.Api.Services
             try
             {
                 var emails = await LoadEmailsInternal();
-                emails.Insert(0, new MockEmail
+                emails.Insert(0, new SandboxEmail
                 {
                     ToEmail = toEmail,
                     Subject = subject,
@@ -55,30 +55,30 @@ namespace ProposalGovernance.Api.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error sending mock email: {ex.Message}");
+                Console.WriteLine($"Error sending sandbox email: {ex.Message}");
             }
         }
 
-        public async Task<IEnumerable<MockEmail>> GetSentEmailsAsync()
+        public async Task<IEnumerable<SandboxEmail>> GetSentEmailsAsync()
         {
             return await LoadEmailsInternal();
         }
 
-        private async Task<List<MockEmail>> LoadEmailsInternal()
+        private async Task<List<SandboxEmail>> LoadEmailsInternal()
         {
             if (!File.Exists(_filePath))
             {
-                return new List<MockEmail>();
+                return new List<SandboxEmail>();
             }
 
             try
             {
                 var json = await File.ReadAllTextAsync(_filePath);
-                return JsonSerializer.Deserialize<List<MockEmail>>(json) ?? new List<MockEmail>();
+                return JsonSerializer.Deserialize<List<SandboxEmail>>(json) ?? new List<SandboxEmail>();
             }
             catch
             {
-                return new List<MockEmail>();
+                return new List<SandboxEmail>();
             }
         }
     }
