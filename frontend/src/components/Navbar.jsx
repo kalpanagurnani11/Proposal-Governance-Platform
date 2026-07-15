@@ -17,7 +17,7 @@ const TAB_TITLES = {
   verification:         { label: 'Verification Centre', icon: '✅' },
 };
 
-export default function Navbar({ user, currentTab, handleLogout, theme, toggleTheme, onMenuClick }) {
+export default function Navbar({ user, currentTab, handleLogout, onMenuClick }) {
   const [showProfile, setShowProfile] = useState(false);
   const profileRef = useRef(null);
 
@@ -92,19 +92,6 @@ export default function Navbar({ user, currentTab, handleLogout, theme, toggleTh
           </span>
         )}
 
-        {/* Theme Toggle */}
-        <button
-          className="theme-toggle"
-          onClick={toggleTheme}
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          id="theme-toggle-btn"
-          title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-        >
-          <div className="theme-toggle-thumb">
-            {theme === 'dark' ? '🌙' : '☀️'}
-          </div>
-        </button>
-
         {/* Notifications */}
         <div className="notification-bell">
           <NotificationCenter />
@@ -144,25 +131,6 @@ export default function Navbar({ user, currentTab, handleLogout, theme, toggleTh
                   <circle cx="12" cy="7" r="4" />
                 </svg>
                 My Profile
-              </button>
-
-              <button
-                className="profile-dropdown-item"
-                role="menuitem"
-                onClick={() => { toggleTheme(); setShowProfile(false); }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" />
-                  <line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                </svg>
-                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
               </button>
 
               <div style={{ height: '1px', background: 'var(--border-color)', margin: '0.25rem 0' }} />
