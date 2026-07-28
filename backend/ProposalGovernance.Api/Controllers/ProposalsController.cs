@@ -12,6 +12,9 @@ using ProposalGovernance.Api.Services;
 
 namespace ProposalGovernance.Api.Controllers
 {
+    /// <summary>
+    /// Handles CRUD operations for Proposals (CDAC-23).
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
