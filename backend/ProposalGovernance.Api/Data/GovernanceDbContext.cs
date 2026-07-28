@@ -192,13 +192,15 @@ namespace ProposalGovernance.Api.Data
 
             // ── Subscription History ──────────────────────────────────────────────
             modelBuilder.Entity<SubscriptionHistory>()
-                .HasOne(sh => sh.User).WithMany().HasForeignKey(sh => sh.UserId).OnDelete(DeleteBehavior.Cascade);
+                .HasOne(sh => sh.User).WithMany().HasForeignKey(sh => sh.UserId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<SubscriptionHistory>()
                 .HasOne(sh => sh.ChangedByAdmin).WithMany().HasForeignKey(sh => sh.ChangedByAdminId).OnDelete(DeleteBehavior.SetNull);
 
             // ── UserSubscription admin grant ──────────────────────────────────────
             modelBuilder.Entity<UserSubscription>()
                 .HasOne(us => us.GrantedByAdmin).WithMany().HasForeignKey(us => us.GrantedByAdminId).OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<UserSubscription>()
+                .HasOne(us => us.User).WithMany().HasForeignKey(us => us.UserId).OnDelete(DeleteBehavior.Restrict);
 
             // ── AI Assistant Logs ─────────────────────────────────────────────────
             modelBuilder.Entity<AIAssistantLog>()
@@ -297,6 +299,12 @@ namespace ProposalGovernance.Api.Data
                     UpdatedAt = DateTime.UtcNow.AddDays(-5)
                 }
             );
+
+            // Globally disable cascading deletes to prevent SQL Server cycle errors
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
     }
 }
