@@ -1,0 +1,177 @@
+[
+  {
+    "Id": "60ae7ad8-73ba-4284-a39f-b360e35795db",
+    "ToEmail": "bmartin@governance.com",
+    "Subject": "[Platform Update] Proposal Approved: CN",
+    "Body": "Hello Bob Martin,\n\nYour proposal \u0027CN\u0027 has been evaluated and the governing committee has decided to: APPROVED.\n\nApproved Amount: $20,000,000.00\nFunds are now available for administrative allocation.\n\nAccess your dashboard to view further details.\n\nBest regards,\nCapital Governance Platform",
+    "SentAt": "2026-06-18T11:43:24.4492927Z"
+  },
+  {
+    "Id": "3ea00143-2e23-427f-8672-73841a598737",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: CN",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027CN\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 8/10\n- Strategic Score: 8/10\n- Risk Rating: 8/10\n- ROI Expectation: 8/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-18T11:42:18.8650898Z"
+  },
+  {
+    "Id": "7a8d36e4-5448-4ec9-9d68-f841b158e6f2",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - CN",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027CN\u0027 (Requested Amount: $20,000,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-06-18T11:41:38.1462368Z"
+  },
+  {
+    "Id": "f80eb170-9ea8-46bb-b362-e1dcb2ec7c16",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] New Proposal Submitted: CN",
+    "Body": "Hello Admin,\n\nA new business proposal titled \u0027CN\u0027 requesting $20,000,000.00 has been submitted by Bob Martin in the Marketing department.\n\nPlease log into the Capital Governance platform to assign reviewers.\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-18T11:41:13.0110744Z"
+  },
+  {
+    "Id": "4ac2f589-fb02-4e34-accf-39d3a20fd2e2",
+    "ToEmail": "bmartin@governance.com",
+    "Subject": "[Platform Update] Proposal Approved: Global Marketing Campaign 2026",
+    "Body": "Hello Bob Martin,\n\nYour proposal \u0027Global Marketing Campaign 2026\u0027 has been evaluated and the governing committee has decided to: APPROVED.\n\nApproved Amount: $450,000.00\nFunds are now available for administrative allocation.\n\nAccess your dashboard to view further details.\n\nBest regards,\nCapital Governance Platform",
+    "SentAt": "2026-06-16T15:13:34.7179146Z"
+  },
+  {
+    "Id": "409cd11b-78af-4d05-906a-a82b97027ea8",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: Global Marketing Campaign 2026",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027Global Marketing Campaign 2026\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 8/10\n- Strategic Score: 8/10\n- Risk Rating: 8/10\n- ROI Expectation: 8/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-16T15:13:14.0153458Z"
+  },
+  {
+    "Id": "15611e84-aef6-4dec-ae32-388a8c8e675b",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - Global Marketing Campaign 2026",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027Global Marketing Campaign 2026\u0027 (Requested Amount: $450,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-06-16T15:12:33.2464345Z"
+  },
+  {
+    "Id": "ddea3320-76ba-49f5-8a7d-e823e4883d8a",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] New Proposal Submitted: Global Marketing Campaign 2026",
+    "Body": "Hello Admin,\n\nA new business proposal titled \u0027Global Marketing Campaign 2026\u0027 requesting $450,000.00 has been submitted by Bob Martin in the Marketing department.\n\nPlease log into the Capital Governance platform to assign reviewers.\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-16T15:11:39.3702798Z"
+  },
+  {
+    "Id": "e210f424-0e0c-4703-a9eb-2565f00fe9dd",
+    "ToEmail": "acooper@governance.com",
+    "Subject": "[Platform Update] Proposal Approved: NextGen AI Platform Infrastructure",
+    "Body": "Hello Alice Cooper,\n\nYour proposal \u0027NextGen AI Platform Infrastructure\u0027 has been evaluated and the governing committee has decided to: APPROVED.\n\nApproved Amount: $1,200,000.00\nFunds are now available for administrative allocation.\n\nAccess your dashboard to view further details.\n\nBest regards,\nCapital Governance Platform",
+    "SentAt": "2026-06-16T15:07:02.354041Z"
+  },
+  {
+    "Id": "b4f38739-3f29-4984-8f87-c4b3d358776d",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: NextGen AI Platform Infrastructure",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027NextGen AI Platform Infrastructure\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 8/10\n- Strategic Score: 8/10\n- Risk Rating: 8/10\n- ROI Expectation: 8/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-16T15:06:32.8280087Z"
+  },
+  {
+    "Id": "ed25995f-377c-4afc-aac3-35fb93946120",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - NextGen AI Platform Infrastructure",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027NextGen AI Platform Infrastructure\u0027 (Requested Amount: $1,200,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-06-16T15:05:53.2206393Z"
+  },
+  {
+    "Id": "11357681-7c35-4328-bee0-6adba614283f",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - NextGen AI Platform Infrastructure",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027NextGen AI Platform Infrastructure\u0027 (Requested Amount: $1,200,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-06-16T15:05:34.5138001Z"
+  },
+  {
+    "Id": "a2660c4d-5a7f-4e72-90fe-66cc38b89d9a",
+    "ToEmail": "acooper@governance.com",
+    "Subject": "[Platform Update] Proposal Approved: NextGen AI Platform Infrastructure",
+    "Body": "Hello Alice Cooper,\n\nYour proposal \u0027NextGen AI Platform Infrastructure\u0027 has been evaluated and the governing committee has decided to: APPROVED.\n\nApproved Amount: $1,200,000.00\nFunds are now available for administrative allocation.\n\nAccess your dashboard to view further details.\n\nBest regards,\nCapital Governance Platform",
+    "SentAt": "2026-06-15T09:00:04.3574899Z"
+  },
+  {
+    "Id": "7007ae58-eba7-414e-83cb-4ceac631e405",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: NextGen AI Platform Infrastructure",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027NextGen AI Platform Infrastructure\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 8/10\n- Strategic Score: 8/10\n- Risk Rating: 8/10\n- ROI Expectation: 8/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-15T08:59:00.9202357Z"
+  },
+  {
+    "Id": "9f2ecf0c-7d25-41c4-8ab8-01ee67fc0a4e",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - NextGen AI Platform Infrastructure",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027NextGen AI Platform Infrastructure\u0027 (Requested Amount: $1,200,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-06-15T08:47:23.1072728Z"
+  },
+  {
+    "Id": "099aac35-fc1c-47bb-8eb5-b839b4ad2b02",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: Global Marketing Campaign 2026",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027Global Marketing Campaign 2026\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 8/10\n- Strategic Score: 8/10\n- Risk Rating: 8/10\n- ROI Expectation: 8/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-14T09:33:39.9709229Z"
+  },
+  {
+    "Id": "0e27d170-fb53-4fbe-a044-095f28758fe0",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - Global Marketing Campaign 2026",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027Global Marketing Campaign 2026\u0027 (Requested Amount: $450,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-06-14T09:33:10.2430761Z"
+  },
+  {
+    "Id": "d37cfd1e-5d3d-4e89-a681-93a62b54a847",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] New Proposal Submitted: Global Marketing Campaign 2026",
+    "Body": "Hello Admin,\n\nA new business proposal titled \u0027Global Marketing Campaign 2026\u0027 requesting $450,000.00 has been submitted by Bob Martin in the Marketing department.\n\nPlease log into the Capital Governance platform to assign reviewers.\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-14T09:32:47.5710574Z"
+  },
+  {
+    "Id": "de3d464b-3a4d-437a-be2c-ac75ef65aff2",
+    "ToEmail": "acooper@governance.com",
+    "Subject": "[Platform Update] Proposal Approved: NextGen AI Platform Infrastructure",
+    "Body": "Hello Alice Cooper,\n\nYour proposal \u0027NextGen AI Platform Infrastructure\u0027 has been evaluated and the governing committee has decided to: APPROVED.\n\nApproved Amount: $1,200,000.00\nFunds are now available for administrative allocation.\n\nAccess your dashboard to view further details.\n\nBest regards,\nCapital Governance Platform",
+    "SentAt": "2026-06-14T07:10:01.8396043Z"
+  },
+  {
+    "Id": "402ccee8-fb0d-4972-b936-8b3177bdf428",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: NextGen AI Platform Infrastructure",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027NextGen AI Platform Infrastructure\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 7/10\n- Strategic Score: 8/10\n- Risk Rating: 8/10\n- ROI Expectation: 8/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-14T07:09:23.5375294Z"
+  },
+  {
+    "Id": "00d5c1af-c51e-4faa-8afc-d99944c63470",
+    "ToEmail": "sjenkins@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - NextGen AI Platform Infrastructure",
+    "Body": "Hello Sarah Jenkins,\n\nYou have been assigned to review and score the proposal \u0027NextGen AI Platform Infrastructure\u0027 (Requested Amount: $1,200,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-06-14T07:07:40.3752032Z"
+  },
+  {
+    "Id": "54616757-d133-43ec-b059-24ba07a263f1",
+    "ToEmail": "acooper@governance.com",
+    "Subject": "[Platform Update] Proposal Approved: NextGen AI Platform Infrastructure",
+    "Body": "Hello Alice Cooper,\n\nYour proposal \u0027NextGen AI Platform Infrastructure\u0027 has been evaluated and the governing committee has decided to: APPROVED.\n\nApproved Amount: $1,200,000.00\nFunds are now available for administrative allocation.\n\nAccess your dashboard to view further details.\n\nBest regards,\nCapital Governance Platform",
+    "SentAt": "2026-06-13T18:24:05.1044762Z"
+  },
+  {
+    "Id": "704b2ede-b7a2-413e-ba80-dc5023c9d174",
+    "ToEmail": "dvance@governance.com",
+    "Subject": "[Platform Alert] Assignment: Review Proposal - Global Marketing Campaign 2026",
+    "Body": "Hello David Vance,\n\nYou have been assigned to review and score the proposal \u0027Global Marketing Campaign 2026\u0027 (Requested Amount: $450,000.00).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System",
+    "SentAt": "2026-06-13T18:17:13.997817Z"
+  },
+  {
+    "Id": "666b1a21-30fb-4722-b55f-2bbecec056c9",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] New Proposal Submitted: Global Marketing Campaign 2026",
+    "Body": "Hello Admin,\n\nA new business proposal titled \u0027Global Marketing Campaign 2026\u0027 requesting $450,000.00 has been submitted by Bob Martin in the Marketing department.\n\nPlease log into the Capital Governance platform to assign reviewers.\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-13T18:14:55.3089695Z"
+  },
+  {
+    "Id": "e6502965-8078-43fd-abd0-eecd0c1f7b7c",
+    "ToEmail": "admin@governance.com",
+    "Subject": "[Platform Alert] Review Submitted: NextGen AI Platform Infrastructure",
+    "Body": "Hello Admin,\n\nReviewer Sarah Jenkins has evaluated proposal \u0027NextGen AI Platform Infrastructure\u0027 and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: 7/10\n- Strategic Score: 7/10\n- Risk Rating: 7/10\n- ROI Expectation: 7/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System",
+    "SentAt": "2026-06-13T14:33:01.9066831Z"
+  }
+]

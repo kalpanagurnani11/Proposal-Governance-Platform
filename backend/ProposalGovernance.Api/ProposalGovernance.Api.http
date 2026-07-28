@@ -1,0 +1,6 @@
+@ProposalGovernance.Api_HostAddress = http://localhost:5031
+
+GET {{ProposalGovernance.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

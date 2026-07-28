@@ -1,0 +1,12 @@
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\bin\Debug\net10.0\StartupFunding.Domain.deps.json
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\bin\Debug\net10.0\StartupFunding.Domain.dll
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\bin\Debug\net10.0\StartupFunding.Domain.pdb
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\StartupFunding.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\StartupFunding.Domain.AssemblyInfoInputs.cache
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\StartupFunding.Domain.AssemblyInfo.cs
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\StartupFunding.Domain.csproj.CoreCompileInputs.cache
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\StartupFunding.Domain.sourcelink.json
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\StartupFunding.Domain.dll
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\refint\StartupFunding.Domain.dll
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\StartupFunding.Domain.pdb
+D:\CDAC\proposal-governance-platform\backend\StartupFunding.Domain\obj\Debug\net10.0\ref\StartupFunding.Domain.dll
