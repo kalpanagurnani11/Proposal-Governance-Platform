@@ -345,6 +345,7 @@ export default function ProjectLifecycle({ proposalId, proposalTitle, proposalSt
       {/* ── Tab: Milestones ── */}
       {tab === 'milestones' && (
         <div>
+          {/* TODO (CDAC-32): Refactor this basic stack into a modern Vertical Stepper Timeline UI */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h3 style={{ margin: 0, fontSize: '1rem', color: '#e2e8f0' }}>🏁 Project Milestones</h3>
             {(isAdmin || isFounder) && (status === 'Active' || status === 'FundAllocated') && (
