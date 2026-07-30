@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProposalGovernance.Api.Data;
 using ProposalGovernance.Api.Models;
+using Razorpay.Api;
+using Microsoft.Extensions.Configuration;
 
 namespace ProposalGovernance.Api.Services
 {
@@ -18,7 +20,7 @@ namespace ProposalGovernance.Api.Services
     public interface IPaymentService
     {
         Task<PaymentResult> ProcessPaymentAsync(int userId, decimal amount, string paymentType);
-        Task<IEnumerable<Payment>> GetPaymentHistoryAsync(int userId);
+        Task<IEnumerable<ProposalGovernance.Api.Models.Payment>> GetPaymentHistoryAsync(int userId);
     }
 
     public class MockPaymentService : IPaymentService
@@ -44,7 +46,7 @@ namespace ProposalGovernance.Api.Services
 
             string txnRef = "MOCK-TXN-" + Guid.NewGuid().ToString().Substring(0, 18).ToUpper();
 
-            var payment = new Payment
+            var payment = new ProposalGovernance.Api.Models.Payment
             {
                 UserId = userId,
                 Amount = amount,
@@ -65,7 +67,7 @@ namespace ProposalGovernance.Api.Services
             };
         }
 
-        public async Task<IEnumerable<Payment>> GetPaymentHistoryAsync(int userId)
+        public async Task<IEnumerable<ProposalGovernance.Api.Models.Payment>> GetPaymentHistoryAsync(int userId)
         {
             return await _context.Payments
                 .Where(p => p.UserId == userId)
@@ -74,17 +76,71 @@ namespace ProposalGovernance.Api.Services
         }
     }
 
-    // Future Razorpay Payment Service placeholder
-    public class FutureRazorpayPaymentService : IPaymentService
+    public class RazorpayPaymentService : IPaymentService
     {
-        public Task<PaymentResult> ProcessPaymentAsync(int userId, decimal amount, string paymentType)
+        private readonly GovernanceDbContext _context;
+        private readonly IConfiguration _configuration;
+
+        public RazorpayPaymentService(GovernanceDbContext context, IConfiguration configuration)
         {
-            throw new NotImplementedException("Razorpay integration is planned for production release.");
+            _context = context;
+            _configuration = configuration;
         }
 
-        public Task<IEnumerable<Payment>> GetPaymentHistoryAsync(int userId)
+        public async Task<PaymentResult> ProcessPaymentAsync(int userId, decimal amount, string paymentType)
         {
-            throw new NotImplementedException("Razorpay integration is planned for production release.");
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return new PaymentResult { Success = false, ErrorMessage = "User not found." };
+            }
+
+            try
+            {
+                string key = _configuration["Razorpay:KeyId"] ?? throw new InvalidOperationException("Razorpay Key missing");
+                string secret = _configuration["Razorpay:KeySecret"] ?? throw new InvalidOperationException("Razorpay Secret missing");
+
+                RazorpayClient client = new RazorpayClient(key, secret);
+                Dictionary<string, object> options = new Dictionary<string, object>();
+                
+                options.Add("amount", (int)(amount * 100)); // amount in paise
+                options.Add("currency", "INR");
+                options.Add("receipt", "txn_" + Guid.NewGuid().ToString().Substring(0,8));
+                
+                Order order = client.Order.Create(options);
+                string orderId = order["id"].ToString();
+
+                var payment = new ProposalGovernance.Api.Models.Payment
+                {
+                    UserId = userId,
+                    Amount = amount,
+                    PaymentType = paymentType,
+                    Status = "Order Created",
+                    TransactionReference = orderId,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _context.Payments.AddAsync(payment);
+                await _context.SaveChangesAsync();
+
+                return new PaymentResult
+                {
+                    Success = true,
+                    TransactionReference = orderId
+                };
+            }
+            catch (Exception ex)
+            {
+                return new PaymentResult { Success = false, ErrorMessage = ex.Message };
+            }
+        }
+
+        public async Task<IEnumerable<ProposalGovernance.Api.Models.Payment>> GetPaymentHistoryAsync(int userId)
+        {
+            return await _context.Payments
+                .Where(p => p.UserId == userId)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
         }
     }
 }

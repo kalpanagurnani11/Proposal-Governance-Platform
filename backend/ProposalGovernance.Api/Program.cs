@@ -43,7 +43,7 @@ builder.Services.AddHttpClient<PatentVerificationService>(); // HttpClient for P
 
 
 // New Scoped Services
-builder.Services.AddScoped<IPaymentService, MockPaymentService>();
+builder.Services.AddScoped<IPaymentService, RazorpayPaymentService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ITrustScoreService, TrustScoreService>();
 builder.Services.AddScoped<INdaService, NdaService>();
@@ -172,7 +172,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<GovernanceDbContext>();
-        context.Database.EnsureCreated(); // Creates DB schema if it doesn't exist
+        context.Database.Migrate(); // Applies any pending migrations for the context to the database
 
         // ── Seed platform config defaults if empty ────────────────────────────
         if (!context.PlatformConfigs.Any())
