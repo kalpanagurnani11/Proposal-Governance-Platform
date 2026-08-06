@@ -9,6 +9,7 @@ namespace ProposalGovernance.Api.Repositories
     {
         Task<User?> GetByIdAsync(int id);
         Task<User?> GetByUsernameAsync(string username);
+        Task<IEnumerable<User>> GetUsersByRoleAsync(string role);
         Task AddAsync(User user);
         Task<bool> SaveChangesAsync();
     }
@@ -30,6 +31,11 @@ namespace ProposalGovernance.Api.Repositories
         public async Task<User?> GetByUsernameAsync(string username)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower());
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByRoleAsync(string role)
+        {
+            return await _context.Users.Where(u => u.Role.ToLower() == role.ToLower()).ToListAsync();
         }
 
         public async Task AddAsync(User user)

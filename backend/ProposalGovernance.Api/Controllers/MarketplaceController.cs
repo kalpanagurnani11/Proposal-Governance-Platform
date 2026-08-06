@@ -55,7 +55,9 @@ namespace ProposalGovernance.Api.Controllers
             [FromQuery] decimal? minEquity = null,
             [FromQuery] decimal? maxEquity = null,
             [FromQuery] string? sortBy = null,
-            [FromQuery] string? search = null)
+            [FromQuery] string? search = null,
+            [FromQuery] int? page = null,
+            [FromQuery] int? pageSize = null)
         {
             var userId = GetCurrentUserId();
             var proposals = await _marketplaceRepository.GetAllForMarketplaceAsync();
@@ -153,7 +155,30 @@ namespace ProposalGovernance.Api.Controllers
                 sorted = items.OrderByDescending(x => x.CreatedAt);
             }
 
-            return Ok(sorted.ToList());
+            var sortedList = sorted.ToList();
+
+            if (page.HasValue)
+            {
+                int currentPage = page.Value <= 0 ? 1 : page.Value;
+                int effectivePageSize = (pageSize.HasValue && pageSize.Value > 0) ? pageSize.Value : 10;
+
+                int totalCount = sortedList.Count;
+                int totalPages = (int)Math.Ceiling(totalCount / (double)effectivePageSize);
+                var pagedItems = sortedList.Skip((currentPage - 1) * effectivePageSize).Take(effectivePageSize).ToList();
+
+                return Ok(new
+                {
+                    items = pagedItems,
+                    currentPage,
+                    pageSize = effectivePageSize,
+                    totalPages,
+                    totalCount,
+                    hasNext = currentPage < totalPages,
+                    hasPrevious = currentPage > 1
+                });
+            }
+
+            return Ok(sortedList);
         }
 
         [HttpGet("{id}")]

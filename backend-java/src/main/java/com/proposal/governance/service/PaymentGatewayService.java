@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
 @Service
-public class SandboxPaymentService {
+class SandboxPaymentService {
     public Object ProcessPaymentAsync() {
         // TODO: Auto-generated stub. Implement business logic here.
         return null;
@@ -16,3 +16,4 @@ public class SandboxPaymentService {
     }
 
 }
+

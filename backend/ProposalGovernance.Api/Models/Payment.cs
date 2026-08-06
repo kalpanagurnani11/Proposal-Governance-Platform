@@ -30,6 +30,26 @@ namespace ProposalGovernance.Api.Models
         [MaxLength(100)]
         public string TransactionReference { get; set; } = string.Empty;
 
+        [MaxLength(100)]
+        public string? OrderId { get; set; }
+
+        [MaxLength(100)]
+        public string? PaymentId { get; set; }
+
+        [MaxLength(255)]
+        public string? Signature { get; set; }
+
+        [MaxLength(50)]
+        public string Gateway { get; set; } = "Razorpay";
+
+        [MaxLength(10)]
+        public string Currency { get; set; } = "INR";
+
+        public bool Verified { get; set; } = false;
+
+        [MaxLength(500)]
+        public string? FailureReason { get; set; }
+
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

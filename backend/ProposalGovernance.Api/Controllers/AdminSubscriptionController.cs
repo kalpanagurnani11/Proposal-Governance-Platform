@@ -68,6 +68,7 @@ namespace ProposalGovernance.Api.Controllers
                     user.Username,
                     user.FullName,
                     user.Email,
+                    contactNumber = user.ContactNumber,
                     user.Role,
                     Subscription = activeSub != null ? new
                     {
@@ -230,6 +231,8 @@ namespace ProposalGovernance.Api.Controllers
         [HttpPost("extend")]
         public async Task<IActionResult> ExtendSubscription([FromBody] ModifySubscriptionDurationInput input)
         {
+            if (input.Days <= 0) return BadRequest(new { message = "Extension days must be greater than zero." });
+
             if (input.Days <= 0) return BadRequest(new { message = "Extension days must be greater than zero." });
 
             var adminId = GetAdminId();

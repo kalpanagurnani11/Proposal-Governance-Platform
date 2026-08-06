@@ -59,6 +59,14 @@ namespace ProposalGovernance.Api.Controllers
             if (proposal.Status != ProposalStatuses.UnderReview && proposal.Status != ProposalStatuses.Submitted)
                 return BadRequest(new { message = "Proposal is not open for reviews." });
 
+            if (request.FeasibilityScore < 1 || request.FeasibilityScore > 10 ||
+                request.StrategicScore < 1 || request.StrategicScore > 10 ||
+                request.RiskScore < 1 || request.RiskScore > 10 ||
+                request.RoiScore < 1 || request.RoiScore > 10)
+            {
+                return BadRequest(new { message = "All evaluation scores must be between 1 and 10." });
+            }
+
             var reviewerId = GetCurrentUserId();
             var reviewer = await _userRepository.GetByIdAsync(reviewerId);
 
@@ -103,11 +111,11 @@ namespace ProposalGovernance.Api.Controllers
 
             await _hubContext.Clients.All.SendAsync("DashboardUpdated");
 
-            // Sandbox email to Admin
+            // Mock email to Admin
             await _emailService.SendEmailAsync(
                 "admin@governance.com",
                 $"[Platform Alert] Review Submitted: {proposal.Title}",
-                $"Hello Admin,\n\nReviewer {reviewer?.FullName} has evaluated proposal '{proposal.Title}' and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: {review.FeasibilityScore}/10\n- Strategic Score: {review.StrategicScore}/10\n- Risk Rating: {review.RiskScore}/10\n- ROI Expectation: {review.RoiScore}/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nCapital Governance Platform System"
+                $"Hello Admin,\n\nReviewer {reviewer?.FullName} has evaluated proposal '{proposal.Title}' and submitted scoring.\n\nEvaluation Metrics:\n- Feasibility Score: {review.FeasibilityScore}/10\n- Strategic Score: {review.StrategicScore}/10\n- Risk Rating: {review.RiskScore}/10\n- ROI Expectation: {review.RoiScore}/10\n\nPlease log in to review the feedback and make a governance decision (approve/reject).\n\nBest regards,\nInnovAura Platform System"
             );
 
             return Ok(review);

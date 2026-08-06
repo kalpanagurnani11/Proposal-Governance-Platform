@@ -83,25 +83,53 @@ namespace ProposalGovernance.Api.Controllers
                 return NotFound(new { message = "Proposal not found or you are not authorized to feature this proposal." });
             }
 
-            decimal price = request.DurationInDays == 7 ? 1999.00m : 5999.00m;
+            decimal price = request.DurationInDays == 7 ? 1999.00m : 4999.00m;
             
-            // Process payment
-            var paymentResult = await _paymentService.ProcessPaymentAsync(userId, price, "FeaturedStartup");
-
-            if (paymentResult.Success)
+            var razorpayOrder = await _paymentService.CreateOrderAsync(userId, price, "FeaturedStartup");
+            return Ok(new
             {
-                // Deactivate current active featured listing if any exists for this startup
+                success = true,
+                orderId = razorpayOrder.OrderId,
+                amount = razorpayOrder.Amount,
+                amountInPaise = razorpayOrder.AmountInPaise,
+                currency = razorpayOrder.Currency,
+                keyId = razorpayOrder.KeyId,
+                paymentType = "FeaturedStartup",
+                startupId = request.StartupId,
+                durationInDays = request.DurationInDays,
+                message = "Razorpay order for featured listing created successfully."
+            });
+        }
+
+        [Authorize(Roles = UserRoles.Founder)]
+        [HttpPost("verify")]
+        public async Task<IActionResult> VerifyFeaturedListingPayment([FromBody] VerifyPaymentRequest request)
+        {
+            int userId = GetCurrentUserId();
+            string username = GetCurrentUsername();
+
+            var verifyResult = await _paymentService.VerifyPaymentSignatureAsync(userId, request);
+            if (!verifyResult.Success)
+            {
+                return BadRequest(new { success = false, message = verifyResult.Error ?? "Signature verification failed." });
+            }
+
+            if (request.ProposalId.HasValue)
+            {
+                int startupId = request.ProposalId.Value;
+                int duration = request.DurationInDays ?? 7;
+
                 var existing = await _context.FeaturedListings
-                    .Where(f => f.StartupId == request.StartupId && f.Status == "Active")
+                    .Where(f => f.StartupId == startupId && f.Status == "Active")
                     .ToListAsync();
                 foreach (var ex in existing) ex.Status = "Expired";
 
                 var start = DateTime.UtcNow;
-                var end = start.AddDays(request.DurationInDays);
+                var end = start.AddDays(duration);
 
                 var featured = new FeaturedListing
                 {
-                    StartupId = request.StartupId,
+                    StartupId = startupId,
                     UserId = userId,
                     StartDate = start,
                     EndDate = end,
@@ -111,13 +139,10 @@ namespace ProposalGovernance.Api.Controllers
                 await _context.FeaturedListings.AddAsync(featured);
                 await _context.SaveChangesAsync();
 
-                await _auditLogService.LogAsync(userId, username, "PurchaseFeaturedListingSuccess", "FeaturedListing", featured.Id, $"Featured proposal '{proposal.Title}' for {request.DurationInDays} days. Ref: {paymentResult.TransactionReference}", HttpContext.Connection.RemoteIpAddress?.ToString());
-
-                return Ok(new { success = true, reference = paymentResult.TransactionReference, message = $"Startup is now featured for {request.DurationInDays} days!" });
+                await _auditLogService.LogAsync(userId, username, "PurchaseFeaturedListingSuccess", "FeaturedListing", featured.Id, $"Featured proposal for {duration} days. Ref: {verifyResult.TransactionReference}", HttpContext.Connection.RemoteIpAddress?.ToString());
             }
 
-            await _auditLogService.LogAsync(userId, username, "PurchaseFeaturedListingFailed", "Proposal", request.StartupId, $"Failed featured listing purchase attempt for {request.DurationInDays} days. Price: {price}", HttpContext.Connection.RemoteIpAddress?.ToString());
-            return BadRequest(new { success = false, message = paymentResult.ErrorMessage ?? "Payment failed." });
+            return Ok(verifyResult);
         }
     }
 

@@ -1,40 +1,41 @@
 package com.proposal.governance.controller;
 
+import com.proposal.governance.dto.*;
+import com.proposal.governance.service.SubscriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import java.math.BigDecimal;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/subscription")
 public class SubscriptionController {
-    @GetMapping("plans")
-    public ResponseEntity<?> GetPlans() {
-        // TODO: Auto-generated stub. Implement business logic here.
-        return ResponseEntity.status(501).body("Not Implemented");
+
+    @Autowired
+    private SubscriptionService subscriptionService;
+
+    @GetMapping("/plans")
+    public ResponseEntity<List<SubscriptionPlanResponse>> getPlans(@RequestParam(required = false, defaultValue = "Founder") String role) {
+        return ResponseEntity.ok(subscriptionService.getPlansByRole(role));
     }
 
-    @GetMapping("my")
-    public ResponseEntity<?> GetMyActiveSubscription() {
-        // TODO: Auto-generated stub. Implement business logic here.
-        return ResponseEntity.status(501).body("Not Implemented");
+    @GetMapping("/my")
+    public ResponseEntity<MySubscriptionResponse> getMySubscription(Authentication authentication) {
+        return ResponseEntity.ok(subscriptionService.getMySubscription(authentication.getName()));
     }
 
-    @PostMapping("buy")
-    public ResponseEntity<?> BuySubscription() {
-        // TODO: Auto-generated stub. Implement business logic here.
-        return ResponseEntity.status(501).body("Not Implemented");
+    @PostMapping("/buy")
+    public ResponseEntity<BuySubscriptionResponse> buySubscription(Authentication authentication, @RequestBody BuySubscriptionRequest request) {
+        return ResponseEntity.ok(subscriptionService.buySubscription(authentication.getName(), request));
     }
 
-    @PostMapping("cancel")
-    public ResponseEntity<?> CancelSubscription() {
-        // TODO: Auto-generated stub. Implement business logic here.
-        return ResponseEntity.status(501).body("Not Implemented");
+    @PostMapping("/cancel")
+    public ResponseEntity<Map<String, Object>> cancelSubscription(Authentication authentication) {
+        return ResponseEntity.ok(subscriptionService.cancelSubscription(authentication.getName()));
     }
-
-    @GetMapping("history")
-    public ResponseEntity<?> GetPaymentHistory() {
-        // TODO: Auto-generated stub. Implement business logic here.
-        return ResponseEntity.status(501).body("Not Implemented");
-    }
-
 }
+
+

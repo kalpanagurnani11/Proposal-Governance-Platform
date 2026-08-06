@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { subscribeToDashboardUpdates } from '../services/signalr';
-import EmailSandboxViewer from '../components/EmailSandboxViewer';
+import EmailSandboxViewer from '../components/EmailSystemViewer';
 import AiReportModal from '../components/AiReportModal';
 
 
@@ -510,5 +510,6 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
 
 

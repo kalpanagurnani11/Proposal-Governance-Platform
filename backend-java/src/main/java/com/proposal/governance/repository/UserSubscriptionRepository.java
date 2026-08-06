@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserSubscriptionRepository extends JpaRepository<UserSubscription, Integer> {
+    java.util.Optional<UserSubscription> findByUserIdAndStatus(Integer userId, String status);
 }
+

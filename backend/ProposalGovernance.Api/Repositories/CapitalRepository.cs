@@ -14,6 +14,7 @@ namespace ProposalGovernance.Api.Repositories
         Task AddAllocationAsync(CapitalAllocation allocation);
         Task AddTransactionAsync(Transaction transaction);
         Task<IEnumerable<Transaction>> GetTransactionsByAllocationIdAsync(int allocationId);
+        Task<IEnumerable<Transaction>> GetAllTransactionsAsync();
         Task<bool> SaveChangesAsync();
     }
 
@@ -55,6 +56,15 @@ namespace ProposalGovernance.Api.Repositories
         {
             return await _context.Transactions
                 .Where(t => t.CapitalAllocationId == allocationId)
+                .OrderByDescending(t => t.TransactionDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync()
+        {
+            return await _context.Transactions
+                .Include(t => t.CapitalAllocation)
+                    .ThenInclude(ca => ca!.Proposal)
                 .OrderByDescending(t => t.TransactionDate)
                 .ToListAsync();
         }

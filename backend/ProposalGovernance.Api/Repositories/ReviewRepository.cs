@@ -10,6 +10,7 @@ namespace ProposalGovernance.Api.Repositories
     public interface IReviewRepository
     {
         Task<Review?> GetByIdAsync(int id);
+        Task<IEnumerable<Review>> GetAllAsync();
         Task<IEnumerable<Review>> GetByProposalIdAsync(int proposalId);
         Task<IEnumerable<Review>> GetByReviewerIdAsync(int reviewerId);
         Task AddAsync(Review review);
@@ -31,6 +32,14 @@ namespace ProposalGovernance.Api.Repositories
                 .Include(r => r.Proposal)
                 .Include(r => r.Reviewer)
                 .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
+        public async Task<IEnumerable<Review>> GetAllAsync()
+        {
+            return await _context.Reviews
+                .Include(r => r.Proposal)
+                .Include(r => r.Reviewer)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Review>> GetByProposalIdAsync(int proposalId)

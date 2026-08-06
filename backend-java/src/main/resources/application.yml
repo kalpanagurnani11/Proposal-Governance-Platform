@@ -39,3 +39,7 @@ logging:
     root: INFO
     org.springframework.web: WARN
     org.hibernate.SQL: DEBUG
+
+razorpay:
+  key_id: ${RAZORPAY_KEY_ID:rzp_test_TMGUnzZTkKHWLG}
+  key_secret: ${RAZORPAY_KEY_SECRET:8pJ7ROBcDd6IYnLhaiTf8u41}

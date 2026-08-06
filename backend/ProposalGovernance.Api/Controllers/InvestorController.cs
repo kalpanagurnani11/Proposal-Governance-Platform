@@ -23,6 +23,7 @@ namespace ProposalGovernance.Api.Controllers
         private readonly INotificationRepository _notificationRepository;
         private readonly IUserRepository _userRepository;
         private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly Services.ISubscriptionService _subscriptionService;
 
         public InvestorController(
             IProposalRepository proposalRepository,
@@ -30,7 +31,8 @@ namespace ProposalGovernance.Api.Controllers
             IInvestmentRepository investmentRepository,
             INotificationRepository notificationRepository,
             IUserRepository userRepository,
-            IHubContext<NotificationHub> hubContext)
+            IHubContext<NotificationHub> hubContext,
+            Services.ISubscriptionService subscriptionService)
         {
             _proposalRepository = proposalRepository;
             _capitalRepository = capitalRepository;
@@ -38,6 +40,7 @@ namespace ProposalGovernance.Api.Controllers
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
             _hubContext = hubContext;
+            _subscriptionService = subscriptionService;
         }
 
         private int GetCurrentUserId()
@@ -115,6 +118,9 @@ namespace ProposalGovernance.Api.Controllers
             if (proposal.Status != ProposalStatuses.Approved && proposal.Status != ProposalStatuses.FundAllocated)
                 return BadRequest(new { message = "Only approved proposals can receive investment." });
 
+            if (proposal.SubmitterId == userId)
+                return BadRequest(new { message = "Founders cannot invest in their own proposals." });
+
             if (request.Amount <= 0)
                 return BadRequest(new { message = "Investment amount must be greater than zero." });
 
@@ -124,6 +130,9 @@ namespace ProposalGovernance.Api.Controllers
             foreach (var inv in existingInvestments) totalInvested += inv.CommittedAmount;
 
             decimal remainingToFund = proposal.ApprovedAmount - totalInvested;
+
+            if (remainingToFund <= 0)
+                return BadRequest(new { message = "This proposal is already 100% fully funded." });
 
             if (request.Amount > remainingToFund)
                 return BadRequest(new { message = $"Investment exceeds remaining funding gap. Remaining: {remainingToFund:C}, Requested: {request.Amount:C}" });
@@ -234,7 +243,7 @@ namespace ProposalGovernance.Api.Controllers
         }
 
         /// <summary>
-        /// Get this investor's portfolio (all their investments with proposal details).
+        /// Get this investor's portfolio (all their investments with complete proposal details).
         /// </summary>
         [HttpGet("portfolio")]
         public async Task<IActionResult> GetPortfolio()
@@ -249,13 +258,28 @@ namespace ProposalGovernance.Api.Controllers
                     ? await _capitalRepository.GetAllocationByProposalIdAsync(inv.ProposalId)
                     : null;
 
+                var prop = inv.Proposal;
+
                 portfolio.Add(new
                 {
                     inv.Id,
                     inv.ProposalId,
-                    ProposalTitle = inv.Proposal?.Title ?? "Unknown",
-                    ProposalDepartment = inv.Proposal?.Department ?? "",
-                    ProposalStatus = inv.Proposal?.Status ?? "",
+                    ProposalTitle = prop?.Title ?? "Unknown",
+                    ProposalDescription = prop?.Description ?? "",
+                    ProposalDepartment = prop?.Department ?? "",
+                    ProposalStatus = prop?.Status ?? "",
+                    SupportingDocumentPath = prop?.SupportingDocumentPath,
+                    StartupName = prop?.StartupName,
+                    ProblemStatement = prop?.ProblemStatement,
+                    ProposedStatement = prop?.ProposedStatement,
+                    BusinessModel = prop?.BusinessModel,
+                    TeamDetails = prop?.TeamDetails,
+                    DemoVideoUrl = prop?.DemoVideoUrl,
+                    SubmitterName = prop?.Submitter?.FullName ?? "Founder",
+                    SubmitterEmail = prop?.Submitter?.Email ?? "",
+                    EquityOffered = prop?.EquityOffered,
+                    RequestedAmount = prop?.RequestedAmount ?? 0,
+                    ApprovedAmount = prop?.ApprovedAmount ?? 0,
                     inv.CommittedAmount,
                     inv.Notes,
                     inv.InvestedAt,

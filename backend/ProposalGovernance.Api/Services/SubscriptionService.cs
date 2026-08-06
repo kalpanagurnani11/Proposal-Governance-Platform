@@ -38,8 +38,32 @@ namespace ProposalGovernance.Api.Services
             _context = context;
         }
 
+        private async Task EnsureSubscriptionsSeededAsync()
+        {
+            try
+            {
+                if (!await _context.Subscriptions.AnyAsync())
+                {
+                    var defaultPlans = new List<Subscription>
+                    {
+                        new Subscription { Id = 1, Name = "Founder Free", UserRole = UserRoles.Founder, Price = 0.00m, DurationInDays = 9999, Description = "Standard listing and interest requests.", IsActive = true },
+                        new Subscription { Id = 2, Name = "Founder Premium", UserRole = UserRoles.Founder, Price = 20.00m, DurationInDays = 30, Description = "Priority listing, visibility boost, verified badge, and priority consultation.", IsActive = true },
+                        new Subscription { Id = 3, Name = "Investor Free", UserRole = UserRoles.Investor, Price = 0.00m, DurationInDays = 9999, Description = "Standard browse, view public proposals, and request access.", IsActive = true },
+                        new Subscription { Id = 4, Name = "Investor Premium", UserRole = UserRoles.Investor, Price = 20.00m, DurationInDays = 30, Description = "Advanced filters, comparisons, risk reports, and trust breakdown.", IsActive = true }
+                    };
+                    await _context.Subscriptions.AddRangeAsync(defaultPlans);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch
+            {
+                // Table might not exist yet or concurrency collision
+            }
+        }
+
         public async Task<IEnumerable<Subscription>> GetAvailablePlansAsync(string role)
         {
+            await EnsureSubscriptionsSeededAsync();
             string targetRole = role == UserRoles.Admin || role == UserRoles.Reviewer ? UserRoles.Founder : role;
             string searchRole = targetRole.ToLower() == "founder" ? "founder" : targetRole.ToLower();
             return await _context.Subscriptions

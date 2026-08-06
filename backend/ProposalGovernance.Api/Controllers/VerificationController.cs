@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ProposalGovernance.Api.Data;
 using ProposalGovernance.Api.Models;
 using ProposalGovernance.Api.Services;
+using ProposalGovernance.Api.Validators;
 
 namespace ProposalGovernance.Api.Controllers
 {
@@ -49,6 +50,68 @@ namespace ProposalGovernance.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var level = request.VerificationLevel ?? "Basic";
+            var pan = request.PanNumber?.Trim().ToUpper();
+            var aadhaar = request.AadhaarNumber?.Trim();
+            var gst = request.GstNumber?.Trim().ToUpper();
+            var cin = request.CinNumber?.Trim().ToUpper();
+            var linkedIn = request.LinkedInUrl?.Trim();
+
+            // 1. Validate format of any non-empty provided field regardless of tier
+            if (!string.IsNullOrWhiteSpace(pan) && !ValidationHelpers.IsValidPan(pan))
+            {
+                return BadRequest(new { message = "A valid 10-character PAN Card Number is required (e.g. ABCDE1234F)." });
+            }
+
+            if (!string.IsNullOrWhiteSpace(aadhaar) && !ValidationHelpers.IsValidAadhaar(aadhaar))
+            {
+                return BadRequest(new { message = "A valid 12-digit Aadhaar Card Number is required." });
+            }
+
+            if (!string.IsNullOrWhiteSpace(linkedIn) && !ValidationHelpers.IsValidUrl(linkedIn))
+            {
+                return BadRequest(new { message = "A valid LinkedIn Profile URL is required starting with http:// or https://" });
+            }
+
+            if (!string.IsNullOrWhiteSpace(gst) && !ValidationHelpers.IsValidGst(gst))
+            {
+                return BadRequest(new { message = "A valid 15-character GSTIN Number is required (e.g. 22AAAAA0000A1Z5)." });
+            }
+
+            if (!string.IsNullOrWhiteSpace(cin) && !ValidationHelpers.IsValidCin(cin))
+            {
+                return BadRequest(new { message = "A valid 21-character CIN Number is required (e.g. L12345MH2020PLC12345)." });
+            }
+
+            // 2. Enforce tier-specific mandatory fields
+            if (level == "Verified" || level == "Business")
+            {
+                if (string.IsNullOrWhiteSpace(pan) || !ValidationHelpers.IsValidPan(pan))
+                {
+                    return BadRequest(new { message = "A valid 10-character PAN Card Number is required for 'Verified' tier." });
+                }
+                if (string.IsNullOrWhiteSpace(aadhaar) || !ValidationHelpers.IsValidAadhaar(aadhaar))
+                {
+                    return BadRequest(new { message = "A valid 12-digit Aadhaar Card Number is required for 'Verified' tier." });
+                }
+            }
+
+            if (level == "Business")
+            {
+                if (string.IsNullOrWhiteSpace(gst) || !ValidationHelpers.IsValidGst(gst))
+                {
+                    return BadRequest(new { message = "A valid 15-character GSTIN Number is required for 'Business' tier." });
+                }
+                if (string.IsNullOrWhiteSpace(request.RegistrationNumber))
+                {
+                    return BadRequest(new { message = "Company Registration Number is required for 'Business' tier." });
+                }
+                if (string.IsNullOrWhiteSpace(cin) || !ValidationHelpers.IsValidCin(cin))
+                {
+                    return BadRequest(new { message = "A valid 21-character CIN Number is required for 'Business' tier." });
+                }
+            }
+
             var userId = GetCurrentUserId();
             var username = GetCurrentUsername();
 
@@ -66,20 +129,20 @@ namespace ProposalGovernance.Api.Controllers
                 await _context.FounderVerifications.AddAsync(existing);
             }
 
-            existing.VerificationLevel = request.VerificationLevel; // "Basic", "Verified", "Business"
-            existing.PanNumber = request.PanNumber;
-            existing.AadhaarNumber = request.AadhaarNumber;
-            existing.LinkedInUrl = request.LinkedInUrl;
-            existing.GstNumber = request.GstNumber;
-            existing.RegistrationNumber = request.RegistrationNumber;
-            existing.CinNumber = request.CinNumber;
-            existing.DocumentUrl = request.DocumentUrl;
+            existing.VerificationLevel = level;
+            existing.PanNumber = pan;
+            existing.AadhaarNumber = aadhaar;
+            existing.LinkedInUrl = linkedIn;
+            existing.GstNumber = gst;
+            existing.RegistrationNumber = request.RegistrationNumber?.Trim();
+            existing.CinNumber = cin;
+            existing.DocumentUrl = request.DocumentUrl?.Trim();
             existing.Status = "Pending";
             existing.CheckedById = null;
             existing.CheckedAt = null;
             existing.Notes = request.Notes;
 
-            // Auto-verify basic elements for sandbox/demo
+            // Auto-verify basic elements for mock/demo
             existing.EmailVerified = true;
             existing.MobileVerified = true;
 
@@ -349,6 +412,144 @@ namespace ProposalGovernance.Api.Controllers
             await _trustScoreService.ComputeTrustScoreAsync(verification.StartupId);
 
             return Ok(new { message = "Startup verification rejected.", data = verification });
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpGet("admin/all")]
+        public async Task<IActionResult> GetAllVerifications()
+        {
+            var founders = await _context.FounderVerifications
+                .Include(fv => fv.User)
+                .Include(fv => fv.CheckedBy)
+                .OrderByDescending(fv => fv.Id)
+                .ToListAsync();
+
+            var startups = await _context.StartupVerifications
+                .Include(sv => sv.Startup)
+                    .ThenInclude(s => s!.Submitter)
+                .Include(sv => sv.VerifiedBy)
+                .OrderByDescending(sv => sv.Id)
+                .ToListAsync();
+
+            var patents = await _context.StartupPatentInfos
+                .Include(sp => sp.Startup)
+                    .ThenInclude(s => s!.Submitter)
+                .Include(sp => sp.VerifiedBy)
+                .OrderByDescending(sp => sp.Id)
+                .ToListAsync();
+
+            return Ok(new { founders, startups, patents });
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpGet("admin/reviewers")]
+        public async Task<IActionResult> GetReviewers()
+        {
+            var reviewers = await _context.Users
+                .Where(u => u.Role == UserRoles.Reviewer)
+                .Select(u => new
+                {
+                    u.Id,
+                    u.Username,
+                    u.FullName,
+                    u.Email,
+                    u.Department
+                })
+                .ToListAsync();
+
+            return Ok(reviewers);
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost("admin/assign-reviewer/{type}/{id}")]
+        public async Task<IActionResult> AssignReviewer(string type, int id, [FromBody] AssignReviewerRequest request)
+        {
+            var adminId = GetCurrentUserId();
+            var username = GetCurrentUsername();
+
+            var reviewer = await _context.Users.FirstOrDefaultAsync(u => u.Id == request.ReviewerId && u.Role == UserRoles.Reviewer);
+            if (reviewer == null) return BadRequest(new { message = "Selected reviewer does not exist or is not a Reviewer." });
+
+            if (type.ToLower() == "founder")
+            {
+                var fv = await _context.FounderVerifications.FirstOrDefaultAsync(f => f.Id == id);
+                if (fv == null) return NotFound(new { message = "Founder verification record not found." });
+
+                fv.CheckedById = request.ReviewerId;
+                fv.Status = "UnderReview";
+                fv.Notes = string.IsNullOrWhiteSpace(request.Notes) ? fv.Notes : request.Notes;
+                await _context.SaveChangesAsync();
+                await _auditLogService.LogAsync(adminId, username, "AssignReviewerFounder", "FounderVerification", id, $"Assigned Reviewer '{reviewer.FullName}' (ID: {reviewer.Id}) to Founder verification.", HttpContext.Connection.RemoteIpAddress?.ToString());
+                return Ok(new { message = $"Reviewer {reviewer.FullName} assigned successfully.", data = fv });
+            }
+            else if (type.ToLower() == "startup")
+            {
+                var sv = await _context.StartupVerifications.FirstOrDefaultAsync(s => s.Id == id);
+                if (sv == null) return NotFound(new { message = "Startup verification record not found." });
+
+                sv.VerifiedById = request.ReviewerId;
+                sv.OverallStatus = "UnderReview";
+                sv.Notes = string.IsNullOrWhiteSpace(request.Notes) ? sv.Notes : request.Notes;
+                await _context.SaveChangesAsync();
+                await _auditLogService.LogAsync(adminId, username, "AssignReviewerStartup", "StartupVerification", id, $"Assigned Reviewer '{reviewer.FullName}' (ID: {reviewer.Id}) to Startup verification.", HttpContext.Connection.RemoteIpAddress?.ToString());
+                return Ok(new { message = $"Reviewer {reviewer.FullName} assigned successfully.", data = sv });
+            }
+            else if (type.ToLower() == "patent")
+            {
+                var sp = await _context.StartupPatentInfos.FirstOrDefaultAsync(p => p.Id == id || p.StartupId == id);
+                if (sp == null) return NotFound(new { message = "Patent verification record not found." });
+
+                sp.VerifiedById = request.ReviewerId;
+                sp.VerificationStatus = "UnderReview";
+                await _context.SaveChangesAsync();
+                await _auditLogService.LogAsync(adminId, username, "AssignReviewerPatent", "StartupPatentInfo", sp.Id, $"Assigned Reviewer '{reviewer.FullName}' (ID: {reviewer.Id}) to Patent verification.", HttpContext.Connection.RemoteIpAddress?.ToString());
+                return Ok(new { message = $"Reviewer {reviewer.FullName} assigned successfully.", data = sp });
+            }
+
+            return BadRequest(new { message = "Invalid verification type." });
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost("admin/request-docs/{type}/{id}")]
+        public async Task<IActionResult> RequestDocuments(string type, int id, [FromBody] AdminReviewRequest request)
+        {
+            var adminId = GetCurrentUserId();
+            var username = GetCurrentUsername();
+
+            if (type.ToLower() == "founder")
+            {
+                var fv = await _context.FounderVerifications.FirstOrDefaultAsync(f => f.Id == id);
+                if (fv == null) return NotFound(new { message = "Founder verification record not found." });
+
+                fv.Status = "NeedsMoreDocuments";
+                fv.Notes = request.Notes;
+                await _context.SaveChangesAsync();
+                await _auditLogService.LogAsync(adminId, username, "RequestDocsFounder", "FounderVerification", id, $"Requested additional documents. Notes: {request.Notes}", HttpContext.Connection.RemoteIpAddress?.ToString());
+                return Ok(new { message = "Additional documents requested from Founder.", data = fv });
+            }
+            else if (type.ToLower() == "startup")
+            {
+                var sv = await _context.StartupVerifications.FirstOrDefaultAsync(s => s.Id == id);
+                if (sv == null) return NotFound(new { message = "Startup verification record not found." });
+
+                sv.OverallStatus = "NeedsMoreDocuments";
+                sv.Notes = request.Notes;
+                await _context.SaveChangesAsync();
+                await _auditLogService.LogAsync(adminId, username, "RequestDocsStartup", "StartupVerification", id, $"Requested additional documents for Startup. Notes: {request.Notes}", HttpContext.Connection.RemoteIpAddress?.ToString());
+                return Ok(new { message = "Additional documents requested for Startup.", data = sv });
+            }
+            else if (type.ToLower() == "patent")
+            {
+                var sp = await _context.StartupPatentInfos.FirstOrDefaultAsync(p => p.Id == id || p.StartupId == id);
+                if (sp == null) return NotFound(new { message = "Patent verification record not found." });
+
+                sp.VerificationStatus = "NeedsMoreDocuments";
+                await _context.SaveChangesAsync();
+                await _auditLogService.LogAsync(adminId, username, "RequestDocsPatent", "StartupPatentInfo", sp.Id, $"Requested additional patent documents. Notes: {request.Notes}", HttpContext.Connection.RemoteIpAddress?.ToString());
+                return Ok(new { message = "Additional patent documentation requested.", data = sp });
+            }
+
+            return BadRequest(new { message = "Invalid verification type." });
         }
     }
 

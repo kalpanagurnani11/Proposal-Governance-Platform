@@ -38,18 +38,54 @@ namespace ProposalGovernance.Api.Controllers
             return User.Identity?.Name ?? "Unknown";
         }
 
+        private string GetCurrentUserRole()
+        {
+            return User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
+        }
+
+        private bool IsAuthorizedSubscriptionRole()
+        {
+            var role = GetCurrentUserRole();
+            return role == UserRoles.Founder || role == UserRoles.Investor || role == UserRoles.Submitter;
+        }
+
         [HttpGet("plans")]
         public async Task<IActionResult> GetPlans([FromQuery] string role)
         {
-            var plans = await _subscriptionService.GetAvailablePlansAsync(role);
+            if (!IsAuthorizedSubscriptionRole())
+            {
+                return StatusCode(403, new { message = "Subscription module is available only for Founder and Investor roles." });
+            }
+
+            var targetRole = string.IsNullOrWhiteSpace(role) ? GetCurrentUserRole() : role;
+            var plans = await _subscriptionService.GetAvailablePlansAsync(targetRole);
             return Ok(plans);
         }
 
         [HttpGet("my")]
         public async Task<IActionResult> GetMyActiveSubscription()
         {
+            if (!IsAuthorizedSubscriptionRole())
+            {
+                return StatusCode(403, new { message = "Subscription module is available only for Founder and Investor roles." });
+            }
+
             var userId = GetCurrentUserId();
             var activeSub = await _subscriptionService.GetActiveSubscriptionAsync(userId);
+
+            if (activeSub == null)
+            {
+                // Auto-assign Free plan as default for Founder / Investor
+                var userRole = GetCurrentUserRole();
+                var plans = await _subscriptionService.GetAvailablePlansAsync(userRole);
+                var freePlan = plans.FirstOrDefault(p => p.Price == 0);
+                if (freePlan != null)
+                {
+                    await _subscriptionService.ActivateSubscriptionAsync(userId, freePlan.Id, "AUTO-FREE-DEFAULT");
+                    activeSub = await _subscriptionService.GetActiveSubscriptionAsync(userId);
+                }
+            }
+
             if (activeSub == null)
             {
                 return Ok(new { hasActive = false, message = "No active subscription found." });
@@ -60,11 +96,17 @@ namespace ProposalGovernance.Api.Controllers
         [HttpPost("buy")]
         public async Task<IActionResult> BuySubscription([FromBody] BuySubscriptionRequest request)
         {
+            if (!IsAuthorizedSubscriptionRole())
+            {
+                return StatusCode(403, new { message = "Subscription module is available only for Founder and Investor roles." });
+            }
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var userId = GetCurrentUserId();
             var username = GetCurrentUsername();
-            var plans = await _subscriptionService.GetAvailablePlansAsync(request.Role);
+            var requestRole = string.IsNullOrWhiteSpace(request.Role) ? GetCurrentUserRole() : request.Role;
+            var plans = await _subscriptionService.GetAvailablePlansAsync(requestRole);
             var plan = plans.FirstOrDefault(p => p.Id == request.SubscriptionId);
 
             if (plan == null)
@@ -72,36 +114,40 @@ namespace ProposalGovernance.Api.Controllers
                 return NotFound(new { message = "Subscription plan not found or not applicable to your role." });
             }
 
-            // Process payment through sandbox service
-            string paymentType = request.Role == UserRoles.Founder ? "FounderPremium" : "InvestorPremium";
+            string paymentType = requestRole == UserRoles.Founder ? "FounderPremium" : "InvestorPremium";
             if (plan.Price == 0)
             {
-                // Free plan activation does not require payment record processing
                 bool successFree = await _subscriptionService.ActivateSubscriptionAsync(userId, plan.Id, "FREE-PLAN");
                 await _auditLogService.LogAsync(userId, username, "ActivateFreeSubscription", "UserSubscription", plan.Id, $"Activated free plan: {plan.Name}", HttpContext.Connection.RemoteIpAddress?.ToString());
-                return Ok(new { success = true, message = "Free subscription tier activated successfully." });
+                return Ok(new { success = true, isFree = true, message = "Free subscription tier activated successfully." });
             }
 
-            var paymentResult = await _paymentService.ProcessPaymentAsync(userId, plan.Price, paymentType);
-            
-            if (paymentResult.Success)
+            // Create Razorpay Order for premium payment
+            var razorpayOrder = await _paymentService.CreateOrderAsync(userId, plan.Price, paymentType);
+            return Ok(new
             {
-                bool activeSuccess = await _subscriptionService.ActivateSubscriptionAsync(userId, plan.Id, paymentResult.TransactionReference);
-                if (activeSuccess)
-                {
-                    await _auditLogService.LogAsync(userId, username, "PurchaseSubscriptionSuccess", "UserSubscription", plan.Id, $"Purchased Premium subscription: {plan.Name}. Ref: {paymentResult.TransactionReference}", HttpContext.Connection.RemoteIpAddress?.ToString());
-                    return Ok(new { success = true, reference = paymentResult.TransactionReference, message = "Premium plan activated successfully!" });
-                }
-                return StatusCode(500, new { message = "Payment was successful, but failed to activate subscription. Please contact support." });
-            }
-
-            await _auditLogService.LogAsync(userId, username, "PurchaseSubscriptionFailed", "Payment", 0, $"Failed premium purchase attempt. Amount: {plan.Price}", HttpContext.Connection.RemoteIpAddress?.ToString());
-            return BadRequest(new { success = false, message = paymentResult.ErrorMessage ?? "Payment failed." });
+                success = true,
+                isFree = false,
+                orderId = razorpayOrder.OrderId,
+                amount = razorpayOrder.Amount,
+                amountInPaise = razorpayOrder.AmountInPaise,
+                currency = razorpayOrder.Currency,
+                keyId = razorpayOrder.KeyId,
+                subscriptionId = plan.Id,
+                paymentType = paymentType,
+                planName = plan.Name,
+                message = "Razorpay order created successfully."
+            });
         }
 
         [HttpPost("cancel")]
         public async Task<IActionResult> CancelSubscription()
         {
+            if (!IsAuthorizedSubscriptionRole())
+            {
+                return StatusCode(403, new { message = "Subscription module is available only for Founder and Investor roles." });
+            }
+
             var userId = GetCurrentUserId();
             var username = GetCurrentUsername();
             
@@ -124,6 +170,11 @@ namespace ProposalGovernance.Api.Controllers
         [HttpGet("history")]
         public async Task<IActionResult> GetPaymentHistory()
         {
+            if (!IsAuthorizedSubscriptionRole())
+            {
+                return StatusCode(403, new { message = "Subscription module is available only for Founder and Investor roles." });
+            }
+
             var userId = GetCurrentUserId();
             var history = await _paymentService.GetPaymentHistoryAsync(userId);
             return Ok(history);

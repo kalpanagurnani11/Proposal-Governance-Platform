@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProposalGovernance.Api.Models;
 using ProposalGovernance.Api.Repositories;
 using ProposalGovernance.Api.Services;
+using ProposalGovernance.Api.Validators;
 
 namespace ProposalGovernance.Api.Controllers
 {
@@ -27,7 +28,22 @@ namespace ProposalGovernance.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
+            if (string.IsNullOrWhiteSpace(request.Username) || !ValidationHelpers.IsValidUsername(request.Username))
+                return BadRequest(new { message = "Username must be 3-50 characters long and contain only letters, numbers, underscores, or hyphens." });
+
+            if (string.IsNullOrWhiteSpace(request.Email) || !ValidationHelpers.IsValidEmail(request.Email))
+                return BadRequest(new { message = "Please provide a valid email address." });
+
+            if (string.IsNullOrWhiteSpace(request.FullName) || request.FullName.Trim().Length < 2)
+                return BadRequest(new { message = "Full Name must be at least 2 characters long." });
+
+            if (string.IsNullOrWhiteSpace(request.ContactNumber) || !ValidationHelpers.IsValidContactNumber(request.ContactNumber))
+                return BadRequest(new { message = "Valid Contact Number (10-15 digits, e.g. +91 98123 45678) is required." });
+
+            if (!ValidationHelpers.IsValidPassword(request.Password, out string passwordError))
+                return BadRequest(new { message = passwordError });
+
+            var existingUser = await _userRepository.GetByUsernameAsync(request.Username.Trim());
             if (existingUser != null)
                 return BadRequest(new { message = "Username is already taken." });
 
@@ -35,18 +51,19 @@ namespace ProposalGovernance.Api.Controllers
 
             // Restrict roles to valid ones
             var role = request.Role;
-            if (role != UserRoles.Admin && role != UserRoles.Reviewer && role != UserRoles.Founder)
+            if (role != UserRoles.Admin && role != UserRoles.Reviewer && role != UserRoles.Founder && role != UserRoles.Investor)
             {
                 role = UserRoles.Founder; // default fallback
             }
 
             var newUser = new User
             {
-                Username = request.Username,
+                Username = request.Username.Trim(),
                 PasswordHash = passwordHash,
                 Role = role,
-                FullName = request.FullName,
-                Email = request.Email,
+                FullName = request.FullName.Trim(),
+                Email = request.Email.Trim(),
+                ContactNumber = request.ContactNumber.Trim(),
                 Department = request.Department,
                 PatentId = request.PatentId,
                 PatentVerificationStatus = string.IsNullOrWhiteSpace(request.PatentId) ? null : "Unverified"
@@ -110,6 +127,7 @@ namespace ProposalGovernance.Api.Controllers
                 Role = user.Role,
                 FullName = user.FullName,
                 Email = user.Email,
+                ContactNumber = user.ContactNumber,
                 Department = user.Department,
                 PatentId = user.PatentId,
                 PatentVerificationStatus = user.PatentVerificationStatus,
@@ -188,6 +206,7 @@ namespace ProposalGovernance.Api.Controllers
         public string Role { get; set; } = string.Empty; // "Admin", "Reviewer", "Submitter"
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string ContactNumber { get; set; } = string.Empty;
         public string Department { get; set; } = string.Empty;
         public string? PatentId { get; set; }
     }
@@ -206,6 +225,7 @@ namespace ProposalGovernance.Api.Controllers
         public string Role { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string ContactNumber { get; set; } = string.Empty;
         public string Department { get; set; } = string.Empty;
         public string? PatentId { get; set; }
         public string? PatentVerificationStatus { get; set; }

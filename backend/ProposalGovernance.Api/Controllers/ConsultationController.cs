@@ -141,6 +141,11 @@ namespace ProposalGovernance.Api.Controllers
         public async Task<IActionResult> GetMyConsultations()
         {
             var userId = GetUserId();
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userRole == UserRoles.Investor && !await _subscriptionService.HasPremiumAsync(userId))
+            {
+                return StatusCode(403, new { message = "Expert Consultations are available exclusively to Premium Investor accounts." });
+            }
             var requests = await _context.ConsultationRequests
                 .Include(c => c.Reviewer)
                 .Include(c => c.Startup)

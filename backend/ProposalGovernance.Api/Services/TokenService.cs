@@ -25,7 +25,12 @@ namespace ProposalGovernance.Api.Services
 
         public string CreateToken(User user)
         {
-            var keyString = _config["Jwt:Key"] ?? "SuperSecretGovernancePlatformKey2026!$PleaseChangeInProduction";
+            var keyString = Environment.GetEnvironmentVariable("JWT_KEY") ?? _config["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(keyString))
+            {
+                keyString = "DevelopmentOnlySuperSecretKeyForLocalTesting";
+            }
+
             var issuer = _config["Jwt:Issuer"] ?? "ProposalGovernanceApi";
             var audience = _config["Jwt:Audience"] ?? "ProposalGovernanceClient";
 

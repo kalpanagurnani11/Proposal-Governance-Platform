@@ -47,7 +47,7 @@ namespace ProposalGovernance.Api.Controllers
             var patentVerified = await _context.StartupPatentInfos
                 .CountAsync(sp => sp.VerificationStatus == "Verified");
 
-            // Sandbox Revenue
+            // Mock Revenue
             var revenue = await _context.Payments
                 .Where(p => p.Status == "Success")
                 .SumAsync(p => p.Amount);
@@ -86,6 +86,8 @@ namespace ProposalGovernance.Api.Controllers
                     userId = us.UserId,
                     username = us.User!.Username,
                     fullName = us.User.FullName,
+                    email = us.User.Email,
+                    contactNumber = us.User.ContactNumber,
                     role = us.User.Role,
                     subscriptionId = us.SubscriptionId,
                     subscriptionName = us.Subscription!.Name,
@@ -98,6 +100,28 @@ namespace ProposalGovernance.Api.Controllers
                 .ToListAsync();
 
             return Ok(subscribers);
+        }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _context.Users
+                .OrderByDescending(u => u.Id)
+                .Select(u => new
+                {
+                    u.Id,
+                    u.Username,
+                    u.FullName,
+                    u.Email,
+                    u.ContactNumber,
+                    u.Role,
+                    u.Department,
+                    u.PatentId,
+                    u.PatentVerificationStatus
+                })
+                .ToListAsync();
+
+            return Ok(users);
         }
 
         [HttpGet("audit-logs")]
@@ -126,6 +150,7 @@ namespace ProposalGovernance.Api.Controllers
                     startupName = n.Startup.StartupName,
                     investorName = n.Investor!.FullName,
                     investorEmail = n.Investor.Email,
+                    investorContactNumber = n.Investor.ContactNumber,
                     acceptedAt = n.AcceptedAt,
                     ipAddress = n.IpAddress,
                     version = n.Version

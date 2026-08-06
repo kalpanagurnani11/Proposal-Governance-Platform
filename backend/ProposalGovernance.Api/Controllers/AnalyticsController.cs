@@ -11,7 +11,7 @@ using ProposalGovernance.Api.Services;
 
 namespace ProposalGovernance.Api.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = UserRoles.Admin)]
     [ApiController]
     [Route("api/[controller]")]
     public class AnalyticsController : ControllerBase
@@ -82,15 +82,9 @@ namespace ProposalGovernance.Api.Controllers
             decimal disbursed = allocations.Sum(a => a.DisbursedAmount);
             decimal remaining = totalPool - allocated;
 
-            // Fetch transaction list for feed
-            var transactions = new List<Transaction>();
-            foreach (var alloc in allocations)
-            {
-                var txs = await _capitalRepository.GetTransactionsByAllocationIdAsync(alloc.Id);
-                transactions.AddRange(txs);
-            }
+            // Fetch transaction list for feed without N+1 queries
+            var transactions = await _capitalRepository.GetAllTransactionsAsync();
             var recentTransactions = transactions
-                .OrderByDescending(t => t.TransactionDate)
                 .Take(10)
                 .Select(t => new
                 {
@@ -104,13 +98,8 @@ namespace ProposalGovernance.Api.Controllers
                 })
                 .ToList();
 
-            // Review Scoring average
-            var allReviews = new List<Review>();
-            foreach (var prop in proposals)
-            {
-                var revs = await _reviewRepository.GetByProposalIdAsync(prop.Id);
-                allReviews.AddRange(revs);
-            }
+            // Review Scoring average without N+1 queries
+            var allReviews = (await _reviewRepository.GetAllAsync()).ToList();
 
             decimal avgFeasibility = allReviews.Any() ? (decimal)allReviews.Average(r => r.FeasibilityScore) : 0;
             decimal avgStrategic = allReviews.Any() ? (decimal)allReviews.Average(r => r.StrategicScore) : 0;
@@ -150,7 +139,7 @@ namespace ProposalGovernance.Api.Controllers
         }
 
         [HttpGet("emails")]
-        public async Task<IActionResult> GetSandboxEmails()
+        public async Task<IActionResult> GetMockEmails()
         {
             var emails = await _emailService.GetSentEmailsAsync();
             return Ok(emails);

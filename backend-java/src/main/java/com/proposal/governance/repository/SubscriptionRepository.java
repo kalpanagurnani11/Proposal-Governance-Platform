@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Integer> {
+    java.util.List<com.proposal.governance.model.Subscription> findByTargetRoleAndActiveTrue(String targetRole);
 }
+

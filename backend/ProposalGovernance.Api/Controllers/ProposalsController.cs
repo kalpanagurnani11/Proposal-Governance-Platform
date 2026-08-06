@@ -12,9 +12,6 @@ using ProposalGovernance.Api.Services;
 
 namespace ProposalGovernance.Api.Controllers
 {
-    /// <summary>
-    /// Handles CRUD operations for Proposals (CDAC-23).
-    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
@@ -56,37 +53,54 @@ namespace ProposalGovernance.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int? page = null, [FromQuery] int? pageSize = null)
         {
             var role = GetCurrentUserRole();
             var userId = GetCurrentUserId();
 
+            IEnumerable<Proposal> proposals;
+
             if (role == UserRoles.Admin)
             {
-                var proposals = await _proposalRepository.GetAllAsync();
-                return Ok(proposals);
+                proposals = await _proposalRepository.GetAllAsync();
             }
             else if (role == UserRoles.Founder)
             {
-                var proposals = await _proposalRepository.GetBySubmitterIdAsync(userId);
-                return Ok(proposals);
+                proposals = await _proposalRepository.GetBySubmitterIdAsync(userId);
             }
             else if (role == UserRoles.Reviewer || role == UserRoles.Investor)
             {
                 // Reviewers and Investors see proposals that are not Draft
                 var allProposals = await _proposalRepository.GetAllAsync();
-                var visibleProposals = new List<Proposal>();
-                foreach (var p in allProposals)
-                {
-                    if (p.Status != ProposalStatuses.Draft)
-                    {
-                        visibleProposals.Add(p);
-                    }
-                }
-                return Ok(visibleProposals);
+                proposals = allProposals.Where(p => p.Status != ProposalStatuses.Draft).ToList();
+            }
+            else
+            {
+                return BadRequest(new { message = "Invalid user role." });
             }
 
-            return BadRequest(new { message = "Invalid user role." });
+            if (page.HasValue)
+            {
+                int currentPage = page.Value <= 0 ? 1 : page.Value;
+                int effectivePageSize = (pageSize.HasValue && pageSize.Value > 0) ? pageSize.Value : 10;
+
+                int totalCount = proposals.Count();
+                int totalPages = (int)Math.Ceiling(totalCount / (double)effectivePageSize);
+                var pagedItems = proposals.Skip((currentPage - 1) * effectivePageSize).Take(effectivePageSize).ToList();
+
+                return Ok(new
+                {
+                    items = pagedItems,
+                    currentPage,
+                    pageSize = effectivePageSize,
+                    totalPages,
+                    totalCount,
+                    hasNext = currentPage < totalPages,
+                    hasPrevious = currentPage > 1
+                });
+            }
+
+            return Ok(proposals);
         }
 
         [HttpGet("{id}")]
@@ -116,8 +130,12 @@ namespace ProposalGovernance.Api.Controllers
             if (user == null)
                 return Unauthorized();
 
-            if (string.IsNullOrWhiteSpace(request.StartupName))
-                return BadRequest(new { message = "Startup Name is required." });
+            if (request.RequestedAmount <= 0)
+                return BadRequest(new { message = "Requested Funding Amount must be greater than zero." });
+            if (string.IsNullOrWhiteSpace(request.StartupName) || request.StartupName.Trim().Length < 2 || request.StartupName.Trim().Length > 30)
+                return BadRequest(new { message = "Startup Name must be between 2 and 30 characters long." });
+            if (string.IsNullOrWhiteSpace(request.Title) || request.Title.Trim().Length < 2 || request.Title.Trim().Length > 30)
+                return BadRequest(new { message = "Proposal Title must be between 2 and 30 characters long." });
             if (string.IsNullOrWhiteSpace(request.ProblemStatement))
                 return BadRequest(new { message = "Problem Statement is required." });
             if (string.IsNullOrWhiteSpace(request.ProposedStatement))
@@ -164,8 +182,10 @@ namespace ProposalGovernance.Api.Controllers
             if (proposal.Status != ProposalStatuses.Draft)
                 return BadRequest(new { message = "Only proposals in Draft state can be edited." });
 
-            if (string.IsNullOrWhiteSpace(request.StartupName))
-                return BadRequest(new { message = "Startup Name is required." });
+            if (string.IsNullOrWhiteSpace(request.StartupName) || request.StartupName.Trim().Length < 2 || request.StartupName.Trim().Length > 30)
+                return BadRequest(new { message = "Startup Name must be between 2 and 30 characters long." });
+            if (string.IsNullOrWhiteSpace(request.Title) || request.Title.Trim().Length < 2 || request.Title.Trim().Length > 30)
+                return BadRequest(new { message = "Proposal Title must be between 2 and 30 characters long." });
             if (string.IsNullOrWhiteSpace(request.ProblemStatement))
                 return BadRequest(new { message = "Problem Statement is required." });
             if (string.IsNullOrWhiteSpace(request.ProposedStatement))
@@ -234,11 +254,11 @@ namespace ProposalGovernance.Api.Controllers
 
             await _hubContext.Clients.All.SendAsync("DashboardUpdated");
 
-            // Sandbox Email to Admin
+            // Mock Email to Admin
             await _emailService.SendEmailAsync(
                 "admin@governance.com",
                 $"[Platform Alert] New Proposal Submitted: {proposal.Title}",
-                $"Hello Admin,\n\nA new business proposal titled '{proposal.Title}' requesting {proposal.RequestedAmount:C} has been submitted by {proposal.Submitter?.FullName} in the {proposal.Department} department.\n\nPlease log into the Capital Governance platform to assign reviewers.\n\nBest regards,\nCapital Governance Platform System"
+                $"Hello Admin,\n\nA new business proposal titled '{proposal.Title}' requesting {proposal.RequestedAmount:C} has been submitted by {proposal.Submitter?.FullName} in the {proposal.Department} department.\n\nPlease log into the InnovAura platform to assign reviewers.\n\nBest regards,\nInnovAura Platform System"
             );
 
             return Ok(proposal);
@@ -286,11 +306,11 @@ namespace ProposalGovernance.Api.Controllers
 
             await _hubContext.Clients.All.SendAsync("DashboardUpdated");
 
-            // Sandbox Email to Reviewer
+            // Mock Email to Reviewer
             await _emailService.SendEmailAsync(
                 reviewer.Email,
                 $"[Platform Alert] Assignment: Review Proposal - {proposal.Title}",
-                $"Hello {reviewer.FullName},\n\nYou have been assigned to review and score the proposal '{proposal.Title}' (Requested Amount: {proposal.RequestedAmount:C}).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nCapital Governance System"
+                $"Hello {reviewer.FullName},\n\nYou have been assigned to review and score the proposal '{proposal.Title}' (Requested Amount: {proposal.RequestedAmount:C}).\n\nPlease evaluate the project feasibility, strategic alignment, risk index, and projected ROI, then submit your scores.\n\nBest regards,\nInnovAura Governance System"
             );
 
             return Ok(new { message = "Reviewer assigned and notified successfully." });
@@ -350,18 +370,34 @@ namespace ProposalGovernance.Api.Controllers
 
             await _hubContext.Clients.All.SendAsync("DashboardUpdated");
 
-            // Sandbox Email to Submitter
+            // Mock Email to Submitter
             var submitter = await _userRepository.GetByIdAsync(proposal.SubmitterId);
             if (submitter != null)
             {
                 await _emailService.SendEmailAsync(
                     submitter.Email,
                     $"[Platform Update] Proposal {proposal.Status}: {proposal.Title}",
-                    $"Hello {submitter.FullName},\n\nYour proposal '{proposal.Title}' has been evaluated and the governing committee has decided to: {proposal.Status.ToUpper()}.\n\n{(proposal.Status == ProposalStatuses.Approved ? $"Approved Amount: {proposal.ApprovedAmount:C}\nFunds are now available for administrative allocation." : "Your project was not selected for capital budgeting this cycle.")}\n\nAccess your dashboard to view further details.\n\nBest regards,\nCapital Governance Platform"
+                    $"Hello {submitter.FullName},\n\nYour proposal '{proposal.Title}' has been evaluated and the governing committee has decided to: {proposal.Status.ToUpper()}.\n\n{(proposal.Status == ProposalStatuses.Approved ? $"Approved Amount: {proposal.ApprovedAmount:C}\nFunds are now available for administrative allocation." : "Your project was not selected for capital budgeting this cycle.")}\n\nAccess your dashboard to view further details.\n\nBest regards,\nInnovAura Platform"
                 );
             }
 
             return Ok(proposal);
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpGet("reviewers")]
+        public async Task<IActionResult> GetReviewers()
+        {
+            var reviewers = await _userRepository.GetUsersByRoleAsync(UserRoles.Reviewer);
+            var result = reviewers.Select(r => new
+            {
+                r.Id,
+                fullName = string.IsNullOrWhiteSpace(r.FullName) ? r.Username : $"{r.FullName} ({r.Department ?? "Reviewer"})",
+                r.Username,
+                r.Email,
+                r.Department
+            });
+            return Ok(result);
         }
 
         [HttpPost("{id}/analyze")]
@@ -395,6 +431,7 @@ namespace ProposalGovernance.Api.Controllers
     public class AssignReviewerRequest
     {
         public int ReviewerId { get; set; }
+        public string? Notes { get; set; }
     }
 
     public class ProposalDecisionRequest

@@ -9,10 +9,10 @@ namespace ProposalGovernance.Api.Services
     public interface IEmailService
     {
         Task SendEmailAsync(string toEmail, string subject, string body);
-        Task<IEnumerable<SandboxEmail>> GetSentEmailsAsync();
+        Task<IEnumerable<MockEmail>> GetSentEmailsAsync();
     }
 
-    public class SandboxEmail
+    public class MockEmail
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string ToEmail { get; set; } = string.Empty;
@@ -24,6 +24,7 @@ namespace ProposalGovernance.Api.Services
     public class EmailService : IEmailService
     {
         private readonly string _filePath;
+        private static readonly System.Threading.SemaphoreSlim _fileLock = new System.Threading.SemaphoreSlim(1, 1);
 
         public EmailService()
         {
@@ -33,10 +34,11 @@ namespace ProposalGovernance.Api.Services
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
+            await _fileLock.WaitAsync();
             try
             {
                 var emails = await LoadEmailsInternal();
-                emails.Insert(0, new SandboxEmail
+                emails.Insert(0, new MockEmail
                 {
                     ToEmail = toEmail,
                     Subject = subject,
@@ -55,30 +57,34 @@ namespace ProposalGovernance.Api.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error sending sandbox email: {ex.Message}");
+                Console.WriteLine($"Error sending mock email: {ex.Message}");
+            }
+            finally
+            {
+                _fileLock.Release();
             }
         }
 
-        public async Task<IEnumerable<SandboxEmail>> GetSentEmailsAsync()
+        public async Task<IEnumerable<MockEmail>> GetSentEmailsAsync()
         {
             return await LoadEmailsInternal();
         }
 
-        private async Task<List<SandboxEmail>> LoadEmailsInternal()
+        private async Task<List<MockEmail>> LoadEmailsInternal()
         {
             if (!File.Exists(_filePath))
             {
-                return new List<SandboxEmail>();
+                return new List<MockEmail>();
             }
 
             try
             {
                 var json = await File.ReadAllTextAsync(_filePath);
-                return JsonSerializer.Deserialize<List<SandboxEmail>>(json) ?? new List<SandboxEmail>();
+                return JsonSerializer.Deserialize<List<MockEmail>>(json) ?? new List<MockEmail>();
             }
             catch
             {
-                return new List<SandboxEmail>();
+                return new List<MockEmail>();
             }
         }
     }

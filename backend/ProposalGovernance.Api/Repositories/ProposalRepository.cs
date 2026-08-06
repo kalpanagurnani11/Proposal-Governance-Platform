@@ -11,7 +11,9 @@ namespace ProposalGovernance.Api.Repositories
     {
         Task<Proposal?> GetByIdAsync(int id);
         Task<IEnumerable<Proposal>> GetAllAsync();
+        Task<PagedResult<Proposal>> GetPagedAsync(int page, int pageSize);
         Task<IEnumerable<Proposal>> GetBySubmitterIdAsync(int submitterId);
+        Task<PagedResult<Proposal>> GetPagedBySubmitterIdAsync(int submitterId, int page, int pageSize);
         Task AddAsync(Proposal proposal);
         Task<bool> SaveChangesAsync();
     }
@@ -40,6 +42,18 @@ namespace ProposalGovernance.Api.Repositories
                 .ToListAsync();
         }
 
+        public async Task<PagedResult<Proposal>> GetPagedAsync(int page, int pageSize)
+        {
+            var p = page <= 0 ? 1 : page;
+            var ps = pageSize <= 0 ? 10 : pageSize;
+
+            var query = _context.Proposals.Include(p => p.Submitter).OrderByDescending(p => p.CreatedAt);
+            var count = await query.CountAsync();
+            var items = await query.Skip((p - 1) * ps).Take(ps).ToListAsync();
+
+            return new PagedResult<Proposal>(items, count, p, ps);
+        }
+
         public async Task<IEnumerable<Proposal>> GetBySubmitterIdAsync(int submitterId)
         {
             return await _context.Proposals
@@ -47,6 +61,22 @@ namespace ProposalGovernance.Api.Repositories
                 .Where(p => p.SubmitterId == submitterId)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
+        }
+
+        public async Task<PagedResult<Proposal>> GetPagedBySubmitterIdAsync(int submitterId, int page, int pageSize)
+        {
+            var p = page <= 0 ? 1 : page;
+            var ps = pageSize <= 0 ? 10 : pageSize;
+
+            var query = _context.Proposals
+                .Include(p => p.Submitter)
+                .Where(prop => prop.SubmitterId == submitterId)
+                .OrderByDescending(prop => prop.CreatedAt);
+
+            var count = await query.CountAsync();
+            var items = await query.Skip((p - 1) * ps).Take(ps).ToListAsync();
+
+            return new PagedResult<Proposal>(items, count, p, ps);
         }
 
         public async Task AddAsync(Proposal proposal)
