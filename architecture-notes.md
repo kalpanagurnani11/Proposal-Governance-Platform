@@ -1,8 +1,8 @@
 # Dev Notes: Architecture & AI Prompts
 
-Just keeping a log here of how I approached the architecture for this project. 
+I am making this file to keep a record of how I built this project. 
 
-I wrote this whole codebase myself from scratch, but I did use AI as a sounding board. In my Gen AI classes, we were taught to use "Critic" personas to get the best out of LLMs. Instead of asking for code, I ask the AI to aggressively critique my ideas.
+The `.NET` backend was my **CDAC institute group project**. But to improve my skills, I built the `Java` Spring Boot backend and the React frontend all by myself from scratch! I used AI to help me check my work. In my Gen AI classes, we learned to use "Critic" prompts. This means instead of just asking the AI to write code, I ask it to find mistakes in my ideas.
 
 Here are some examples of how I used the "Expert Critic" prompting strategy:
 
@@ -20,9 +20,9 @@ The AI's critique completely tore down the frontend approach, highlighting that 
 **What I did with the advice:**
 The AI criticized the lack of historical tracking, pointing out that overwriting a single row destroys audit logs for past subscriptions. It suggested a separate `UserSubscriptions` table. I took the critique and created the relational `UserSubscription` entity.
 
-### 3. Java and .NET dual-backend setup
+### 3. Migrating from .NET to Java
 **My Prompt:**
-> "Act as a harsh DevOps Engineer. Critique my frontend routing strategy. I have a Spring Boot backend on 8081 and a .NET backend on 5024. I am currently hardcoding the `localhost:8081` URLs in all my React components. Why is this a terrible idea, and what is the best practice for dynamic swapping?"
+> "Act as a harsh DevOps Engineer. Critique my frontend routing strategy. I have my new solo Spring Boot backend on 8081 and the legacy CDAC institute `.NET` backend on 5024. I am currently hardcoding the `localhost:8081` URLs in all my React components. Why is this a terrible idea, and what is the best practice for dynamic swapping between the two backends?"
 
 **What I did with the advice:**
 The AI roasted the hardcoded URLs and suggested using a centralized `api.js` file with an Axios interceptor that pulls from Vite's `import.meta.env`. I implemented the interceptor based on that critique, making testing a breeze.

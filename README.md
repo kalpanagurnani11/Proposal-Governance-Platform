@@ -7,7 +7,7 @@ I built this platform to solve a specific problem: bridging the gap between star
 The coolest part? I integrated **Google's Gemini AI** to act as a smart assistant that automatically analyzes proposals and gives founders feedback before they submit. 
 
 ## 🛠️ Tech Stack
-I wanted to challenge myself, so I actually built **two different backends** that can swap seamlessly with the frontend. 
+The `.NET` backend was actually my **CDAC institute group project**. But I wanted to learn more, so I built a brand new backend completely from scratch by myself using **Java and Spring Boot**. Now, the frontend can easily switch between the old .NET group project and my new Java backend!
 
 **Frontend:**
 - **React + Vite** (Super fast builds)
@@ -67,13 +67,13 @@ I didn't just want to push code; I wanted to document my journey building this. 
 
 I've documented some of the nastiest bugs I ran into (like CORS nightmares, Razorpay Auth failures, and AWS S3 limits) and exactly how I used Prompt-Driven Development (via AI) to get myself unblocked. 
 
-- `docs/architecture-notes.md`
-- `docs/gemini-ai-integration-notes.md`
-- `docs/jwt-auth-debug.md`
-- `docs/cors-policy-debug.md`
-- `docs/aws-ec2-deployment-debug.md`
-- `docs/razorpay-401-debug-notes.md`
-- `docs/jpa-lazy-loading-fix.md`
+- `architecture-notes.md`
+- `gemini-ai-integration-notes.md`
+- `jwt-auth-debug.md`
+- `cors-policy-debug.md`
+- `aws-ec2-deployment-debug.md`
+- `razorpay-401-debug-notes.md`
+- `jpa-lazy-loading-fix.md`
 
 ## License
 Feel free to poke around the code, fork it, or reach out if you have any questions!
