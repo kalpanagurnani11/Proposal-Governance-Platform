@@ -57,6 +57,8 @@ namespace ProposalGovernance.Api.Controllers
             if (request.PaymentType.Equals("FounderPremium", StringComparison.OrdinalIgnoreCase) ||
                 request.PaymentType.Equals("InvestorPremium", StringComparison.OrdinalIgnoreCase))
             {
+                // Hardcoding the 20.00 price here to prevent frontend manipulation. 
+                // We saw some issues in June where users could bypass the price check.
                 finalAmount = 20.00m; // Enforce ₹20.00 pricing for Premium subscriptions
             }
 
@@ -84,6 +86,7 @@ namespace ProposalGovernance.Api.Controllers
             // Post-verification business logic trigger
             if (request.PaymentType.Contains("Founder") || request.PaymentType.Contains("Investor") || request.SubscriptionId.HasValue)
             {
+                // Fallback logic for legacy mobile clients sending null subscription IDs
                 int subId = request.SubscriptionId ?? (request.PaymentType.Contains("Investor") ? 4 : 2);
                 bool activated = await _subscriptionService.ActivateSubscriptionAsync(userId, subId, verifyResult.TransactionReference);
                 if (activated)

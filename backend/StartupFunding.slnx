@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="StartupFunding.Domain/StartupFunding.Domain.csproj" />
-  <Project Path="StartupFunding.Application/StartupFunding.Application.csproj" />
-  <Project Path="StartupFunding.Infrastructure/StartupFunding.Infrastructure.csproj" />
-  <Project Path="StartupFunding.API/StartupFunding.API.csproj" />
-</Solution>

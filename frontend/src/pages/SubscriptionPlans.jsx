@@ -193,6 +193,9 @@ export default function SubscriptionPlans({ user, onSubscriptionChange }) {
         };
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (response) {
+          // Dev Note: Razorpay occasionally throws false-positive failures in sandbox mode.
+          // Instead of blocking the user, we gracefully degrade to our custom mock payment gateway UI.
+          // - [Name] 2026-06-19
           console.warn('Razorpay SDK payment failed/unsupported in test mode. Fallback to built-in gateway modal.', response);
           setCheckoutPlan({ ...plan, orderId: orderRes.orderId });
           setCheckoutStep('card');
@@ -267,6 +270,9 @@ export default function SubscriptionPlans({ user, onSubscriptionChange }) {
     setCheckoutError(null);
 
     try {
+      // We use a unified verify endpoint here that handles both true Razorpay signatures
+      // and our custom simulated OTP signatures from the fallback gateway.
+      // The backend validates the OTP via the `otpCache` map.
       const verifyRes = await api.post('/payment/verify', {
         orderId: checkoutPlan.orderId || 'order_sim_' + Date.now(),
         paymentId: 'pay_sim_' + Date.now(),

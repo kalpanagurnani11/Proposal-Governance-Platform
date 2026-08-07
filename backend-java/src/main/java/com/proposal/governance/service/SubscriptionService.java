@@ -188,6 +188,9 @@ public class SubscriptionService {
 
     private String createRazorpayOrder(int amountInPaise, String planName) {
         try {
+            // Note: We're using standard RestTemplate here instead of the Razorpay Java SDK 
+            // because the SDK was throwing strange classpath conflicts with our Spring Boot version.
+            // A simple REST call with Basic Auth is much lighter anyway!
             org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
             org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
             headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
@@ -281,7 +284,9 @@ public class SubscriptionService {
                     return subscriptionRepository.save(newSub);
                 });
 
-        // Deactivate old active subscription
+        // Business Rule: Users can only have one active subscription at a time.
+        // If they upgrade/downgrade, we must deactivate their old plan immediately
+        // so we don't accidentally double-charge or give them conflicting permissions.
         userSubscriptionRepository.findByUserIdAndStatus(user.getId(), "Active")
                 .ifPresent(old -> {
                     old.setStatus("Deactivated");
